@@ -1,0 +1,20 @@
+.card {
+  border: 1px solid #555;
+  border-radius: 8px;
+  padding: 1rem;
+  background-color: #2a2a2a;
+  width: 300px;
+}
+
+.name {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #a0c4ff;
+  margin: 0 0 0.5rem 0;
+}
+
+.description {
+  font-size: 0.9rem;
+  color: #ccc;
+  margin: 0;
+}

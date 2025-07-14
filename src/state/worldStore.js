@@ -11,38 +11,32 @@ export const useWorldStore = create(
       // =================================================================
 
       meta: {
-        lastCharacterId: 0,
-        lastLocationId: 0,
+        lastCharacterId: 1,
+        lastLocationId: 1,
       },
 
-      characters: [
-        // Example of what a character object will look like:
-        // {
-        //   id: 1,
-        //   name: "Kaelen",
-        //   currentLocationID: null, // null means they are "unassigned"
-        //   simulation: {
-        //     goals: ["Find the Sunstone"],
-        //     stats: { health: 100 },
-        //   },
-        //   narrative: {
-        //     description: "A bitter and impatient knight...",
-        //     memories: [],
-        //   },
-        //   presentation: {
-        //     portraitUrl: "/images/characters/kaelen.png",
-        //   }
-        // }
-      ],
+      characters: [ { //SAMPLE CHARACTER FOR TESTING PURPOSES TODO: REMOVE ONCE THEY CAN BE CREATED
+    id: 1,
+    name: "Kaelen",
+    currentLocationID: null,
+    narrative: {
+      description: "A bitter knight haunted by past failures.",
+    },
+    // ... etc
+	}],
 
-      locations: [],
+      locations: [{ //SAMPLE LOCATION FOR TESTING PURPOSES TODO: REMOVE ONCE THEY CAN BE CREATED
+      id: 1,
+      name: "The Whispering Library",
+      narrative: {
+        description: "A towering, circular library filled with ancient, dust-covered tomes.",
+      },
+      presentation: {
+        imageUrl: "/images/locations/library.jpg" // We'll use this later
+      }
+    }],
 
-      // =================================================================
-      // PART 2: THE ACTIONS (The Verbs)
-      // These are the only functions allowed to modify the state.
-      // They always use the `set` function provided by Zustand.
-      // =================================================================
-
+    //FUNCTIONS
       addCharacter: (newCharacterData) => set((state) => {
         const newId = state.meta.lastCharacterId + 1;
         const newCharacter = {
