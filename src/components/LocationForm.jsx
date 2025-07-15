@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useWorldStore } from '../state/worldStore';
-import styles from './LocationForm.module.css';
+import styles from './Form.module.css';
 
 function LocationForm({ onSaveComplete }) {
 	// Get the action from the store
@@ -32,20 +32,20 @@ function LocationForm({ onSaveComplete }) {
   };
   
   return (
-    <form onSubmit={handleSubmit}>
+    <form className={styles.form} onSubmit={handleSubmit}>
       <h2>Create New Location</h2>
       
-      <div>
-        <label htmlFor="name">Name</label>
-        <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} />
+      <div className={styles.formGroup}>
+        <label className={styles.label} htmlFor="name">Name</label>
+        <input className={styles.input} type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} />
       </div>
       
-      <div>
-        <label htmlFor="description">Description</label>
-        <textarea id="description" rows="4" value={description} onChange={(e) =>setDescription(e.target.value)}></textarea>
+      <div className={styles.formGroup}>
+        <label className={styles.label} htmlFor="description">Description</label>
+        <textarea className={styles.textarea} id="description" rows="4" value={description} onChange={(e) =>setDescription(e.target.value)}></textarea>
       </div>
       
-      <button type="submit">Save Location</button>
+      <button className={styles.submitButton} type="submit">Save Location</button>
     </form>
   );
 }
