@@ -1,0 +1,12 @@
+.pip {
+	border: 1px solid #555;
+	border-radius: 2px;
+	padding: 1rem;
+	background-color: #caece1;
+	width: 30px;
+}
+
+.initial {
+	font-size: 1rem;
+	color: #a0c4ff;
+}

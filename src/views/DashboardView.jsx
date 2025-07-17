@@ -5,26 +5,44 @@ import CharacterDisp from '../components/CharacterDisp';
 import Poppin from '../components/Poppin';
 import CharacterForm from '../components/CharacterForm';
 import LocationForm from '../components/LocationForm';
-
+import UnplacedContainer from '../components/UnplacedContainer';
+import styles from './DashboardView.module.css';
+import { DndContext, useDroppable } from '@dnd-kit/core';
 
 function DashboardView() {
   const locations = useWorldStore((state) => state.locations);
   const characters = useWorldStore((state) => state.characters);
+	
+  const unplachars = characters.filter(char => char.currentLocationID === null);
 
   const [isCharPoppinOpen, setIsCharPoppinOpen] = useState(false);
   const [isLocPoppinOpen, setIsLocPoppinOpen] = useState(false);
+  const moveCharacter = useWorldStore((state) => state.moveCharacter);
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (over) {
+      const characterId = active.id;
+      const locationId = over.id;
+	  if (locationId === 'unplaced'){
+		moveCharacter(characterId, null);
+	  }
+	  else {
+		moveCharacter(characterId, locationId);
+	  }
+    }
+  };
 
   return (
+	<DndContext onDragEnd={handleDragEnd}>
     <div>
       <h1>TerrorAIze</h1>
       <section>
         <h2>Locations</h2>
 		<button onClick={() => setIsLocPoppinOpen(true)}>+ Create New Location</button>
-        <div>
+        <div className={styles.dispContainer}>
           {locations.map((loc) => (
-            // For each location in the array, render a LocationCard.
-            // Pass the location object as a 'location' prop.
-            // The 'key' is a special React requirement for lists.
             <LocationCard key={loc.id} location={loc} />
           ))}
         </div>
@@ -32,10 +50,8 @@ function DashboardView() {
 	  <section>
         <h2>Characters</h2>
 		<button onClick={() => setIsCharPoppinOpen(true)}>+ Create New Character</button>
-        <div>
-          {characters.map((char) => (
-            <CharacterDisp key={char.id} character={char} />
-          ))}
+        <div className="UnplacedDisplay">
+          <UnplacedContainer characters={unplachars}/>
         </div>
       </section>
 	  
@@ -46,6 +62,7 @@ function DashboardView() {
         <LocationForm onSaveComplete={() => setIsLocPoppinOpen(false)} />
       </Poppin>
     </div>
+	</DndContext>
   );
 }
 
