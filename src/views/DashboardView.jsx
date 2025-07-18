@@ -18,6 +18,7 @@ function DashboardView() {
   const [isCharPoppinOpen, setIsCharPoppinOpen] = useState(false);
   const [isLocPoppinOpen, setIsLocPoppinOpen] = useState(false);
   const [characterToEdit, setCharacterToEdit] = useState(null);
+  const [locationToEdit, setLocationToEdit] = useState(null);
   const moveCharacter = useWorldStore((state) => state.moveCharacter);
 
   const handleDragEnd = (event) => {
@@ -38,6 +39,10 @@ function DashboardView() {
   const openEditor = (characterb) => {
 	setIsCharPoppinOpen(true);
 	setCharacterToEdit(characterb);
+  }; 
+  const openLocEditor = (locationb) => {
+	setIsLocPoppinOpen(true);
+	setLocationToEdit(locationb);
   };
 
   return (
@@ -49,7 +54,7 @@ function DashboardView() {
 		<button onClick={() => setIsLocPoppinOpen(true)}>+ Create New Location</button>
         <div className={styles.dispContainer}>
           {locations.map((loc) => (
-            <LocationCard key={loc.id} location={loc} />
+            <LocationCard key={loc.id} location={loc} onEditClick={openLocEditor}/>
           ))}
         </div>
       </section>
@@ -65,7 +70,7 @@ function DashboardView() {
         <CharacterForm characterToEdit={characterToEdit} onSaveComplete={() => {setIsCharPoppinOpen(false); setCharacterToEdit(null);}} />
       </Poppin>
 	  <Poppin isOpen={isLocPoppinOpen} onClose={() => setIsLocPoppinOpen(false)}>
-        <LocationForm onSaveComplete={() => setIsLocPoppinOpen(false)} />
+        <LocationForm locationToEdit={locationToEdit} onSaveComplete={() => {setIsLocPoppinOpen(false); setLocationToEdit(null);}} />
       </Poppin>
     </div>
 	</DndContext>

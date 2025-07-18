@@ -22,11 +22,12 @@ function CharacterDisp({ character, onEditClick }) {
     <div ref={setNodeRef} className={styles.card} style={style}>
 	  <div className={styles.cardHeader}{...listeners} {...attributes}>
         <h3 className={styles.name}>{character.name}</h3>
+		<p className={styles.description}>{character.narrative.description}</p>
       </div>
 	  <DispDropdown>
 		<button className={styles.menuitem} onClick={() => onEditClick(character)}> Edit </button>
 	  </DispDropdown>
-      <p className={styles.description}>{character.narrative.description}</p>
+      
     </div>
   );
 }

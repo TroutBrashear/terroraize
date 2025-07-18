@@ -77,7 +77,15 @@ export const useWorldStore = create(
         ),
       })),
 
-
+	  
+	  updateLocation: (locationId, updatedData) => set((state) => ({
+        locations: state.locations.map(loc =>
+          loc.id === locationId
+            ? { ...loc, ...updatedData } // Merges the new data into the character
+            : loc
+        ),
+      })),
+	  
       // =================================================================
       // PART 3: SELECTORS (A Pro-Tip for getting derived data)
       // These functions don't change state, they just read and compute it.

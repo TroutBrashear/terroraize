@@ -1,10 +1,11 @@
 import React from 'react';
 import { useDroppable } from '@dnd-kit/core';
+import DispDropdown from './DispDropdown';
 import styles from './LocationCard.module.css';
 import { useWorldStore } from '../state/worldStore';
 import CharPip from './CharPip';
 
-function LocationCard({ location }) {
+function LocationCard({ location, onEditClick }) {
   if (!location) {
     return null;
   }
@@ -28,6 +29,9 @@ function LocationCard({ location }) {
 		<CharPip key={char.id} character={char}/>
 		))}
 	  </div>
+	  <DispDropdown>
+		<button className={styles.menuitem} onClick={() => onEditClick(location)}> Edit </button>
+	  </DispDropdown>
 	</div>
   );
 }

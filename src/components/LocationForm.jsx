@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useWorldStore } from '../state/worldStore';
 import styles from './Form.module.css';
 
-function LocationForm({ onSaveComplete }) {
+function LocationForm({ locationToEdit, onSaveComplete }) {
 	// Get the action from the store
   const addLocation = useWorldStore((state) => state.addLocation);
-
+  const updateLocation = useWorldStore((state) => state.updateLocation);
+  
   // State to hold the form data
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+
+  useEffect(() => {
+	if(locationToEdit) {
+		setName(locationToEdit.name);
+		setDescription(locationToEdit.narrative.description || '');
+	  }
+}, [locationToEdit]);
 
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevents the browser from reloading the page
@@ -24,8 +32,13 @@ function LocationForm({ onSaveComplete }) {
       presentation: {}
     };
     
-    // Call the action from the store!
-    addLocation(newLocationData);
+    // Either update or create the location
+	if(locationToEdit){
+		updateLocation(locationToEdit.id, newLocationData);
+	}
+	else {
+		addLocation(newLocationData);
+	}
 
     // Tell the App component we're done so it can switch back
     onSaveComplete();
