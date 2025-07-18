@@ -1,0 +1,43 @@
+.menuContainer {
+  position: relative; /* This is the anchor for the menu */
+  display: inline-block;
+}
+
+.menu {
+  position: absolute;
+  top: 100%; /* Position it right below the button */
+  left: 0;  /* Align to the right edge of the button */
+  background-color: #444;
+  border: 1px solid #666;
+  border-radius: 4px;
+  padding: 0.5rem 0;
+  z-index: 10; /* Ensure it appears above other content */
+  min-width: 120px;
+}
+
+.menuItem {
+  background: none;
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menuItem:hover {
+  background-color: #555;
+}
+
+
+.dropdownbutton {
+  background: none;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  padding: 0;
+}
+
+.dropdownbutton:hover {
+  color: white;
+}

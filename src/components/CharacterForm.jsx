@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useWorldStore } from '../state/worldStore';
 import styles from './Form.module.css';
 
-function CharacterForm({ onSaveComplete }) {
+function CharacterForm({ characterToEdit, onSaveComplete }) {
 	// Get the action from the store
   const addCharacter = useWorldStore((state) => state.addCharacter);
-
+  const updateCharacter = useWorldStore((state) => state.updateCharacter);
+  
   // State to hold the form data
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+
+  useEffect(() => {
+	  if(characterToEdit) {
+		setName(characterToEdit.name);
+		setDescription(characterToEdit.narrative.description || '');
+	  }
+}, [characterToEdit]);
 
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevents the browser from reloading the page
@@ -24,9 +32,13 @@ function CharacterForm({ onSaveComplete }) {
       presentation: {}
     };
     
-    // Call the action from the store!
-    addCharacter(newCharacterData);
-
+    // Either update or create the character
+	if(characterToEdit){
+		updateCharacter(characterToEdit.id, newCharacterData);
+	}
+	else {
+		addCharacter(newCharacterData);
+	}
     // Tell the App component we're done so it can switch back
     onSaveComplete();
   };

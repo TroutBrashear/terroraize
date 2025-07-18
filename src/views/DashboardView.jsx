@@ -12,11 +12,12 @@ import { DndContext, useDroppable } from '@dnd-kit/core';
 function DashboardView() {
   const locations = useWorldStore((state) => state.locations);
   const characters = useWorldStore((state) => state.characters);
-	
+  
   const unplachars = characters.filter(char => char.currentLocationID === null);
 
   const [isCharPoppinOpen, setIsCharPoppinOpen] = useState(false);
   const [isLocPoppinOpen, setIsLocPoppinOpen] = useState(false);
+  const [characterToEdit, setCharacterToEdit] = useState(null);
   const moveCharacter = useWorldStore((state) => state.moveCharacter);
 
   const handleDragEnd = (event) => {
@@ -32,6 +33,11 @@ function DashboardView() {
 		moveCharacter(characterId, locationId);
 	  }
     }
+  };
+
+  const openEditor = (characterb) => {
+	setIsCharPoppinOpen(true);
+	setCharacterToEdit(characterb);
   };
 
   return (
@@ -51,12 +57,12 @@ function DashboardView() {
         <h2>Characters</h2>
 		<button onClick={() => setIsCharPoppinOpen(true)}>+ Create New Character</button>
         <div className="UnplacedDisplay">
-          <UnplacedContainer characters={unplachars}/>
+          <UnplacedContainer characters={unplachars} onEditClick={openEditor}/>
         </div>
       </section>
 	  
 	  <Poppin isOpen={isCharPoppinOpen} onClose={() => setIsCharPoppinOpen(false)}>
-        <CharacterForm onSaveComplete={() => setIsCharPoppinOpen(false)} />
+        <CharacterForm characterToEdit={characterToEdit} onSaveComplete={() => {setIsCharPoppinOpen(false); setCharacterToEdit(null);}} />
       </Poppin>
 	  <Poppin isOpen={isLocPoppinOpen} onClose={() => setIsLocPoppinOpen(false)}>
         <LocationForm onSaveComplete={() => setIsLocPoppinOpen(false)} />

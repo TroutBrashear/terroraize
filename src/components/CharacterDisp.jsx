@@ -1,9 +1,10 @@
 import React from 'react';
 import { useDraggable } from '@dnd-kit/core';
+import DispDropdown from './DispDropdown';
 import styles from './CharacterDisp.module.css';
 
 
-function CharacterDisp({ character }) {
+function CharacterDisp({ character, onEditClick }) {
 	 if (!character) {
     return null;
   }
@@ -16,10 +17,15 @@ function CharacterDisp({ character }) {
     transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
   } : undefined;
 
-
+	
   return (
-    <div ref={setNodeRef} className={styles.card} style={style} {...listeners} {...attributes}>
-      <h3 className={styles.name}>{character.name}</h3>
+    <div ref={setNodeRef} className={styles.card} style={style}>
+	  <div className={styles.cardHeader}{...listeners} {...attributes}>
+        <h3 className={styles.name}>{character.name}</h3>
+      </div>
+	  <DispDropdown>
+		<button className={styles.menuitem} onClick={() => onEditClick(character)}> Edit </button>
+	  </DispDropdown>
       <p className={styles.description}>{character.narrative.description}</p>
     </div>
   );
