@@ -86,6 +86,29 @@ export const useWorldStore = create(
         ),
       })),
 	  
+	  deleteCharacter: (characterId) => set((state) => ({
+		  characters: state.characters.filter(char => {
+			  return char.id !== characterId;
+		  }),
+	  })),
+	  
+	  deleteLocation: (locationId) => set((state) => {
+		  const updatedLocations = state.locations.filter(loc => loc.id !== locationId);
+		  const updatedCharacters = state.characters.map(char => {
+			  if(char.currentLocationID === locationId){
+				return { ...char, currentLocationID: null };
+			  }
+			  
+			return char;
+		})
+		
+		return {
+			locations: updatedLocations,
+			characters: updatedCharacters,
+		};
+	}),
+	  
+	  
       // =================================================================
       // PART 3: SELECTORS (A Pro-Tip for getting derived data)
       // These functions don't change state, they just read and compute it.
@@ -96,6 +119,7 @@ export const useWorldStore = create(
         const allCharacters = get().characters;
         return allCharacters.filter(char => char.currentLocationID === locationId);
       },
+
 
     }),
     {

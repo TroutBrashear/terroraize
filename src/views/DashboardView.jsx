@@ -19,7 +19,10 @@ function DashboardView() {
   const [isLocPoppinOpen, setIsLocPoppinOpen] = useState(false);
   const [characterToEdit, setCharacterToEdit] = useState(null);
   const [locationToEdit, setLocationToEdit] = useState(null);
+  
   const moveCharacter = useWorldStore((state) => state.moveCharacter);
+  const deleteCharacter = useWorldStore((state) => state.deleteCharacter);
+  const deleteLocation = useWorldStore((state) => state.deleteLocation);
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -34,6 +37,17 @@ function DashboardView() {
 		moveCharacter(characterId, locationId);
 	  }
     }
+  };
+  
+  const handleDeleteCharacter = (character) => {
+	if(window.confirm("Confirm Deletion of Character.")){
+	  deleteCharacter(character.id);
+	}
+  };
+  const handleDeleteLocation = (location) => {
+	if(window.confirm("Confirm Deletion of Location.")){
+	  deleteLocation(location.id);
+	}
   };
 
   const openEditor = (characterb) => {
@@ -54,7 +68,7 @@ function DashboardView() {
 		<button onClick={() => setIsLocPoppinOpen(true)}>+ Create New Location</button>
         <div className={styles.dispContainer}>
           {locations.map((loc) => (
-            <LocationCard key={loc.id} location={loc} onEditClick={openLocEditor}/>
+            <LocationCard key={loc.id} location={loc} onEditClick={openLocEditor} onDeleteClick={handleDeleteLocation}/>
           ))}
         </div>
       </section>
@@ -62,7 +76,7 @@ function DashboardView() {
         <h2>Characters</h2>
 		<button onClick={() => setIsCharPoppinOpen(true)}>+ Create New Character</button>
         <div className="UnplacedDisplay">
-          <UnplacedContainer characters={unplachars} onEditClick={openEditor}/>
+          <UnplacedContainer characters={unplachars} onEditClick={openEditor} onDeleteClick={handleDeleteCharacter}/>
         </div>
       </section>
 	  

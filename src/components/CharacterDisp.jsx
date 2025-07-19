@@ -4,7 +4,7 @@ import DispDropdown from './DispDropdown';
 import styles from './CharacterDisp.module.css';
 
 
-function CharacterDisp({ character, onEditClick }) {
+function CharacterDisp({ character, onEditClick, onDeleteClick }) {
 	 if (!character) {
     return null;
   }
@@ -26,6 +26,7 @@ function CharacterDisp({ character, onEditClick }) {
       </div>
 	  <DispDropdown>
 		<button className={styles.menuitem} onClick={() => onEditClick(character)}> Edit </button>
+		<button className={styles.menuitem} onClick={() => onDeleteClick(character)}> Delete </button>
 	  </DispDropdown>
       
     </div>

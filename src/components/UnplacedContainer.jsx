@@ -3,7 +3,7 @@ import { useDroppable } from '@dnd-kit/core';
 import { useWorldStore } from '../state/worldStore';
 import CharacterDisp from './CharacterDisp';
 
-function UnplacedContainer({ characters, onEditClick }) {
+function UnplacedContainer({ characters, onEditClick, onDeleteClick }) {
 	
  const { isOver, setNodeRef } = useDroppable({
     id: 'unplaced', // null droppable
@@ -24,7 +24,7 @@ function UnplacedContainer({ characters, onEditClick }) {
       <h2>Unassigned Characters</h2>
       <div style={{ display: 'flex', flexWrap: 'true', gap: '8px' }}>
         {characters.map(char => (
-          <CharacterDisp key={char.id} character={char} onEditClick={onEditClick} />
+          <CharacterDisp key={char.id} character={char} onEditClick={onEditClick} onDeleteClick={onDeleteClick} />
         ))}
       </div>
     </div>
