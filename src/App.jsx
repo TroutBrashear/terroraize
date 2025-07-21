@@ -1,11 +1,18 @@
 
 import React from 'react';
-import DashboardView from './views/DashboardView'; // Import your new view
+import DashboardView from './views/DashboardView';
+import SceneTimeline from './views/SceneTimeline';
+import styles from './App.module.css';
 
 function App() {
   return (
-    <div>
-      <DashboardView />
+    <div className={styles.contentDisp}>
+	  <main className={styles.mainDash}>
+	    <DashboardView />
+	  </main>
+	  <footer>
+		<SceneTimeline />
+	  </footer>
     </div>
   );
 }

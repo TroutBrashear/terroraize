@@ -13,6 +13,8 @@ export const useWorldStore = create(
       meta: {
         lastCharacterId: 1,
         lastLocationId: 1,
+		currentTurn: 1,
+		lastSceneId: 1,
       },
 
       characters: [ { //SAMPLE CHARACTER FOR TESTING PURPOSES TODO: REMOVE ONCE THEY CAN BE CREATED
@@ -35,6 +37,15 @@ export const useWorldStore = create(
         imageUrl: "/images/locations/library.jpg" // We'll use this later
       }
     }],
+	
+	  scenes: [{
+		id: 1,
+		summary: "The Gang enters a haunted mansion.",
+		locationId: 1,
+		narrative: {
+			narrationText: "Scoopy went in the front door and ate like 16 sandwiches."
+		}
+	  }],
 
     //FUNCTIONS
       addCharacter: (newCharacterData) => set((state) => {
@@ -58,6 +69,21 @@ export const useWorldStore = create(
           meta: { ...state.meta, lastLocationId: newId },
         };
       }),
+	  
+	  addScene: (newSceneData) => set((state) => {
+		const newId = state.meta.lastSceneId + 1;
+		const newScene = {
+			id: newId,
+			turn: state.meta.currentTurn,
+			status: 'pending',
+			...newSceneData
+		};
+		return { 
+			scenes: [...state.scenes, newScene],
+			meta: { ...state.meta, lastSceneId: newId },
+		};
+	  }),
+	
 
       // Moves a character to a location (or to unassigned if locationId is null)
       moveCharacter: (characterId, locationId) => set((state) => ({
@@ -86,6 +112,14 @@ export const useWorldStore = create(
         ),
       })),
 	  
+	  updateScene: (sceneId, updatedData) => set((state) => ({
+		  scenes: state.scenes.map(scn =>
+			scn.id === sceneId
+			  ? { ...scn, ...updatedData }
+			  : scn
+		),
+	  })),
+	  
 	  deleteCharacter: (characterId) => set((state) => ({
 		  characters: state.characters.filter(char => {
 			  return char.id !== characterId;
@@ -100,19 +134,20 @@ export const useWorldStore = create(
 			  }
 			  
 			return char;
-		})
+		});
 		
 		return {
 			locations: updatedLocations,
 			characters: updatedCharacters,
 		};
-	}),
+	  }),
 	  
+	  deleteScene: (sceneId) => set((state) => ({
+		  scenes: state.scenes.filter(scn => {
+			return scn.id !== sceneId;
+		  }),
+	  })),
 	  
-      // =================================================================
-      // PART 3: SELECTORS (A Pro-Tip for getting derived data)
-      // These functions don't change state, they just read and compute it.
-      // =================================================================
 
       getCharactersByLocationId: (locationId) => {
         // The `get` function gives us access to the current state
@@ -120,7 +155,12 @@ export const useWorldStore = create(
         return allCharacters.filter(char => char.currentLocationID === locationId);
       },
 
-
+	  
+	  advTurn: () => set((state) => ({
+		  meta: {
+			...state.meta, currentTurn: state.meta.currentTurn +1,
+		  }
+	  }))
     }),
     {
       name: 'terroraize', // The key used in localStorage

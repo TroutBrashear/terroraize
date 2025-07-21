@@ -5,7 +5,7 @@ import styles from './LocationCard.module.css';
 import { useWorldStore } from '../state/worldStore';
 import CharPip from './CharPip';
 
-function LocationCard({ location, onEditClick, onDeleteClick }) {
+function LocationCard({ location, onEditClick, onDeleteClick, onSceneClick }) {
   if (!location) {
     return null;
   }
@@ -32,6 +32,7 @@ function LocationCard({ location, onEditClick, onDeleteClick }) {
 	  <DispDropdown>
 		<button className={styles.menuitem} onClick={() => onEditClick(location)}> Edit </button>
 		<button className={styles.menuitem} onClick={() => onDeleteClick(location)}> Delete </button>
+		<button className={styles.menuitem} onClick={() => onSceneClick(location.id)}> Create Scene </button>
 	  </DispDropdown>
 	</div>
   );

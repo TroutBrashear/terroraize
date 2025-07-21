@@ -1,0 +1,10 @@
+.contentDisp {
+	display: flex;
+	height: 100vh;
+}
+
+.mainDash {
+	flex-grow: 1;
+	overflow-y: auto;
+	padding-right: 160px;
+}
