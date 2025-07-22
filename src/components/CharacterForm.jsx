@@ -16,7 +16,7 @@ function CharacterForm({ characterToEdit, onSaveComplete }) {
 		setName(characterToEdit.name);
 		setDescription(characterToEdit.narrative.description || '');
 	  }
-}, [characterToEdit]);
+	}, [characterToEdit]);
 
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevents the browser from reloading the page

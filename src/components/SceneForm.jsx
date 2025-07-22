@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useWorldStore } from '../state/worldStore';
 import styles from './Form.module.css';
 
 function SceneForm({ scene, locationId, onSaveComplete }) {
 	const addScene = useWorldStore((state) => state.addScene);
+	const updateScene = useWorldStore((state) => state.updateScene);
 	
 	const [nText, setNText] = useState('');
+	
+	useEffect(() => {
+	  if(scene) {
+		setNText(scene.narrative.narrationText || '');
+	  }
+	}, [scene]);
 	
 	const handleSubmit = (event) => {
 		event.preventDefault();
@@ -16,8 +23,12 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 				narrationText: nText
 			}
 		};
-	
-		addScene(newSceneData);
+		if(scene) {
+			updateScene(scene.id, newSceneData);
+		}	
+		else {
+			addScene(newSceneData);
+		}
 		onSaveComplete();
 	};
 	
