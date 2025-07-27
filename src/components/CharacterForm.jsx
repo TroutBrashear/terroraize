@@ -10,11 +10,13 @@ function CharacterForm({ characterToEdit, onSaveComplete }) {
   // State to hold the form data
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [goals, setGoals] = useState([]);
 
   useEffect(() => {
 	  if(characterToEdit) {
 		setName(characterToEdit.name);
 		setDescription(characterToEdit.narrative.description || '');
+		setGoals(characterToEdit.narrative.goals || []);
 	  }
 	}, [characterToEdit]);
 
@@ -25,7 +27,8 @@ function CharacterForm({ characterToEdit, onSaveComplete }) {
     const newCharacterData = {
       name: name,
       narrative: {
-        description: description
+        description: description,
+		goals: goals
       },
       // We can add other layers here later
       simulation: {},
@@ -43,6 +46,28 @@ function CharacterForm({ characterToEdit, onSaveComplete }) {
     onSaveComplete();
   };
   
+  const handleAddGoal = () => {
+	  const updatedGoals = [...goals, ''];
+	  setGoals(updatedGoals);
+  };
+  
+  const handleGoalChange = (newIndex, newGoal) => {
+	const updatedGoals = goals.map((goal, index) => {
+		if(index === newIndex) {
+			return newGoal;
+		}			
+		return goal;
+	});
+	setGoals(updatedGoals);
+  };
+  
+  const handleRemoveGoal = (delIndex) => {
+	const updatedGoals = goals.filter((goal, index) => {
+			return index !== delIndex;
+	});
+	setGoals(updatedGoals);
+  };
+  
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
       <h2>Create New Character</h2>
@@ -56,6 +81,17 @@ function CharacterForm({ characterToEdit, onSaveComplete }) {
         <label className={styles.label} htmlFor="description">Description</label>
         <textarea className={styles.textarea} id="description" rows="4" value={description} onChange={(e) =>setDescription(e.target.value)}></textarea>
       </div>
+	  
+	  <div className={styles.formGroup}>
+		<label className={styles.label}>Goals</label>
+		<button type="button" onClick={handleAddGoal}>Add Goal</button>
+			{goals.map((gol, index) =>
+				<div className={styles.formRow}>
+					<button type="button" onClick={() => handleRemoveGoal(index)}>X</button>
+					<input className={styles.input} key={index} value={gol} onChange={(e) => handleGoalChange(index, e.target.value)} />
+				</div>
+			)}
+	  </div>
       
       <button className={styles.submitButton} type="submit">Save Character</button>
     </form>

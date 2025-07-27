@@ -36,7 +36,7 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 		<form className={styles.form} onSubmit={handleSubmit}>
 			<div className = {styles.formGroup}>
 				<label className={styles.label} htmlFor="text">Scene Text </label>
-				<input className={styles.input} type="text" id="name" value={nText} onChange={(e) => setNText(e.target.value)} />
+				<textarea className={styles.textarea} type="text" id="name" value={nText} onChange={(e) => setNText(e.target.value)} />
 			</div>
 			
 			<button className={styles.submitButton} type="submit">Save Scene</button>

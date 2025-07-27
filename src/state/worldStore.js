@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware'; // We'll add this for saving to localStorage
+import { persist } from 'zustand/middleware'; 
 
 // This is the main function from Zustand. We wrap it in `persist` middleware.
 export const useWorldStore = create(
@@ -23,6 +23,7 @@ export const useWorldStore = create(
     currentLocationID: null,
     narrative: {
       description: "A bitter knight haunted by past failures.",
+	  goals: [],
     },
     // ... etc
 	}],
@@ -54,6 +55,10 @@ export const useWorldStore = create(
           id: newId,
           ...newCharacterData,
           currentLocationID: null, // Always start unassigned
+		  narrative: {
+			...newCharacterData.narrative,
+			goals: [],
+		  },
         };
         return {
           characters: [...state.characters, newCharacter],
@@ -84,6 +89,22 @@ export const useWorldStore = create(
 		};
 	  }),
 	
+	  addGoal: (characterId, newGoal) => set((state) => ({
+		characters: state.characters.map(char => {
+			if (char.id !== characterId) {
+				return char; // Not the right character, do nothing.
+			}
+
+			const updatedGoals = [...char.narrative.goals, newGoal];
+		
+			return {
+				...char,
+				narrative: {
+					goals: updatedGoals,
+				},
+			};
+		})
+	  })),
 
       // Moves a character to a location (or to unassigned if locationId is null)
       moveCharacter: (characterId, locationId) => set((state) => ({

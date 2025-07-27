@@ -8,8 +8,8 @@
 
 .formGroup {
   display: flex;
-  flex-direction: column; /* Stack label on top of input */
-  gap: 0.25rem; /* Add a little space between label and input */
+  flex-direction: column;
+  gap: 0.25rem; 
 }
 
 .label {
@@ -26,11 +26,9 @@
   padding: 0.5rem;
   color: white;
   font-size: 1rem;
-  font-family: inherit; /* Make sure it uses the app's default font */
-}
-
-.textarea {
-  resize: vertical; /* Allow user to resize the textarea vertically */
+  font-family: inherit; 
+  resize: vertical; 
+  width: 300%; /*bleh. come back to this.*/
 }
 
 .submitButton {
@@ -48,4 +46,10 @@
 
 .submitButton:hover {
   background-color: #357abd; /* A slightly darker blue on hover */
+}
+
+.formRow {
+  display: flex;
+  flex-direction: row;
+  gap: 0.25rem; 
 }
