@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export const useSettingsStore = create(
+export const useSettingStore = create(
 	persist((set) => ({
 		api: {
 			apiKey: '',
 			modelName: 'gpt-3.5-turbo', 
-		}
+		},
 		
 		setAPISettings: (newSettings) => set((state) => ({
 			api: {
@@ -16,4 +16,5 @@ export const useSettingsStore = create(
 		})),
 	}), 
 
-{ name: 'terroraize-settings' }));
+{ name: 'terroraize-settings' }
+));

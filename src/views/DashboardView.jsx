@@ -6,6 +6,7 @@ import Poppin from '../components/Poppin';
 import CharacterForm from '../components/CharacterForm';
 import LocationForm from '../components/LocationForm';
 import SceneForm from '../components/SceneForm';
+import WriterSettingsForm from '../components/WriterSettingsForm';
 import UnplacedContainer from '../components/UnplacedContainer';
 import styles from './DashboardView.module.css';
 import { DndContext, useDroppable } from '@dnd-kit/core';
@@ -23,6 +24,7 @@ function DashboardView() {
   const [locationToEdit, setLocationToEdit] = useState(null);
   const [isScenePoppinOpen, setIsScenePoppinOpen] = useState(false);
   const [selectedScene, setSelectedScene] = useState(null);
+  const [isWSettingsPoppinOpen, setIsWSettingsPoppinOpen] = useState(false);
   
   const moveCharacter = useWorldStore((state) => state.moveCharacter);
   const deleteCharacter = useWorldStore((state) => state.deleteCharacter);
@@ -73,6 +75,7 @@ function DashboardView() {
   return (
 	<DndContext onDragEnd={handleDragEnd}>
     <div>
+	  <button onClick={() => setIsWSettingsPoppinOpen(true)}>AI Settings</button>
 	  <div className={styles.headerContainer}>
         <h1>{currentTurn}</h1>
 		<button onClick={() => advTurn()}> Advance Turn </button>
@@ -103,6 +106,9 @@ function DashboardView() {
       </Poppin>
 	  <Poppin isOpen={isScenePoppinOpen} onClose={() => setIsScenePoppinOpen(false)}>
 		<SceneForm scene={selectedScene} locationId={locationToEdit} onSaveComplete={() => {setIsScenePoppinOpen(false); setLocationToEdit(null);}}/>
+	  </Poppin>
+	  <Poppin isOpen={isWSettingsPoppinOpen} onClose={() => setIsWSettingsPoppinOpen(false)}>
+		<WriterSettingsForm onSaveComplete={() => {setIsWSettingsPoppinOpen(false);}}/>
 	  </Poppin>
     </div>
 	</DndContext>
