@@ -5,7 +5,7 @@ export const useSettingStore = create(
 	persist((set) => ({
 		api: {
 			apiKey: '',
-			modelName: 'gpt-3.5-turbo', 
+			modelName: 'deepseek-ai/DeepSeek-V3-0324', 
 		},
 		
 		setAPISettings: (newSettings) => set((state) => ({

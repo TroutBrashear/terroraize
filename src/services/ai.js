@@ -1,10 +1,40 @@
 
+export function buildScenePrompt(locationId, worldState) {
+	const location = worldState.locations.find(loc => loc.id === locationId);
+	
+	const characters = worldState.characters.filter(char => char.currentLocationID === locationId);
+	
+	let prompt = "You are a writer. Please write a story scene based on the following details: \n\n";
+	
+	prompt += `Location: ${location.name}:`;
+	prompt += `${location.narrative.description}\n\n`;
+	
+	if (characters.length > 0){
+		prompt += "Characters in Scene: \n";
+		characters.forEach(char => {
+			prompt += `-- ${char.name}: ${char.narrative.description}\n`;
+			
+			if (char.narrative.goals.length > 0) {
+				prompt += `${char.name}s goals: ${char.narrative.goals.join(', ')}\n`;
+			}
+		});
+		prompt += '\n';
+	}
+	else {
+		prompt += "No characters in scene. \n";
+	}
+	
+	
+	return prompt;
+}
 
 export async function generateScene(prompt, apiKey, modelName){
 	const apiUrl = "https://api.featherless.ai/v1/completions";
-	cont headers = {
+	const headers = {
 		'Content-Type': 'application/json',
-		'Authorization': `Bearer ${apiKey}`
+		'Authorization': `Bearer ${apiKey}`,
+		'HTTP-Referer': 'http://localhost:5173', 
+		'X-Title': 'terroraize' 
 	};
 	
 	const body = {
@@ -24,6 +54,7 @@ export async function generateScene(prompt, apiKey, modelName){
 		
 		if (!response.ok) {
 			const errorData = await response.json();
+			console.error(errorData);
 			throw new Error(`API Error: ${response.status} - ${errorData.error.message || JSON.stringify(errorData)}`);
 		}
 		
