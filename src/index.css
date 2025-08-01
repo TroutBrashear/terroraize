@@ -11,6 +11,10 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+  --z-index-base: 0;
+  --z-index-view: 10;
+  --z-index-poppin: 20;
 }
 
 a {

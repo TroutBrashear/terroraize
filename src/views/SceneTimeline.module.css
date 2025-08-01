@@ -12,6 +12,7 @@
   right: 0;
   height: auto;
   width: 250px;
+  z-index: var(--z-index-view);
 }
 
 .turnSection {

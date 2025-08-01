@@ -13,11 +13,16 @@ function CharacterForm({ characterToEdit, onSaveComplete }) {
   const [goals, setGoals] = useState([]);
 
   useEffect(() => {
-	  if(characterToEdit) {
+	if(characterToEdit) {
 		setName(characterToEdit.name);
 		setDescription(characterToEdit.narrative.description || '');
 		setGoals(characterToEdit.narrative.goals || []);
-	  }
+	}
+	else {
+		setName('');
+		setDescription('');
+		setGoals([]);
+    }
 	}, [characterToEdit]);
 
   const handleSubmit = (event) => {
@@ -42,6 +47,8 @@ function CharacterForm({ characterToEdit, onSaveComplete }) {
 	else {
 		addCharacter(newCharacterData);
 	}
+	
+	
     // Tell the App component we're done so it can switch back
     onSaveComplete();
   };
