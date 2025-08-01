@@ -29,7 +29,7 @@ export function buildScenePrompt(locationId, worldState) {
 }
 
 export async function generateScene(prompt, apiKey, modelName){
-	const apiUrl = "https://api.featherless.ai/v1/completions";
+	const apiUrl = "/api/completions";
 	const headers = {
 		'Content-Type': 'application/json',
 		'Authorization': `Bearer ${apiKey}`,
