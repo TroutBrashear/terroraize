@@ -11,11 +11,18 @@ function CharPip({ character }) {
 		id: character.id, // The unique ID for this draggable item
 	});
 	
-	const style = transform ? {
-    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-  } : undefined;
-  
-  const initial = character.name ? character.name[0]: '?';
+	  const initial = character.name ? character.name[0].toUpperCase(): '?';
+	const color = character.presentation?.color || '#555555';
+	
+	const style = transform ? { 
+		backgroundColor: color,
+		transform: `translate3d(${transform.x}px, ${transform.y}px,0)`,
+		zIndex:999,
+		} 
+		: {
+		backgroundColor: color,
+	};
+
   
   return (
     <div ref={setNodeRef} className={styles.pip} style={style} {...listeners} {...attributes}>

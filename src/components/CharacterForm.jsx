@@ -11,17 +11,20 @@ function CharacterForm({ characterToEdit, onSaveComplete }) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [goals, setGoals] = useState([]);
+  const [color, setColor] = useState([]);
 
   useEffect(() => {
 	if(characterToEdit) {
 		setName(characterToEdit.name);
 		setDescription(characterToEdit.narrative.description || '');
 		setGoals(characterToEdit.narrative.goals || []);
+		setColor(characterToEdit.presentation?.color || '#555555');
 	}
 	else {
 		setName('');
 		setDescription('');
 		setGoals([]);
+		setColor('#555555');
     }
 	}, [characterToEdit]);
 
@@ -37,7 +40,9 @@ function CharacterForm({ characterToEdit, onSaveComplete }) {
       },
       // We can add other layers here later
       simulation: {},
-      presentation: {}
+      presentation: {
+		color: color
+	  }
     };
     
     // Either update or create the character
@@ -84,6 +89,11 @@ function CharacterForm({ characterToEdit, onSaveComplete }) {
         <input className={styles.input} type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} />
       </div>
       
+	  <div className={styles.formGroup}>
+		<label className={styles.label} htmlFor="color">Color</label>
+		<input type="color" value={color} onChange={(e) => setColor(e.target.value)} />
+	  </div>
+	  
       <div className={styles.formGroup}>
         <label className={styles.label} htmlFor="description">Description</label>
         <textarea className={styles.textarea} id="description" rows="4" value={description} onChange={(e) =>setDescription(e.target.value)}></textarea>

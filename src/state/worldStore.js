@@ -55,6 +55,9 @@ export const useWorldStore = create(
           id: newId,
           ...newCharacterData,
           currentLocationID: null, // Always start unassigned
+		  presentation: {
+			color: "#ddbb54",
+		  },
 		  narrative: {
 			...newCharacterData.narrative,
 			goals: [],
