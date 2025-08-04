@@ -15,11 +15,13 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [nText, setNText] = useState('');
 	const [sLocation, setSLocation] = useState('');
+	const [resolved, setResolved] = useState(false);
 	
 	useEffect(() => {
 	  if(scene) {
 		setNText(scene.narrative.narrationText || '');
 		setSLocation(scene.locationId || '');
+		setResolved(scene.resolved || false);
 	  }
 	  else {
 		setSLocation(locationId);
@@ -30,7 +32,8 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 		event.preventDefault();
 		
 		const newSceneData = {
-			locationId: locationId,
+			locationId: sLocation,
+			resolved: resolved,
 			narrative: {
 				narrationText: nText
 			}
@@ -51,6 +54,8 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 		
 		const aiResponse = await generateScene(prompt, apiKey, modelName);
 		setNText(aiResponse);
+		
+		setResolved(true);
 		
 		setIsLoading(false);
 	};

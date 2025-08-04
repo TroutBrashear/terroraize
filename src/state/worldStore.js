@@ -41,7 +41,7 @@ export const useWorldStore = create(
 	
 	  scenes: [{
 		id: 1,
-		summary: "The Gang enters a haunted mansion.",
+		resolved: false,
 		locationId: 1,
 		narrative: {
 			narrationText: "Scoopy went in the front door and ate like 16 sandwiches."

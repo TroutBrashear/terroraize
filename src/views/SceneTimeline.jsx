@@ -22,6 +22,8 @@ function SceneTimeline() {
 	
 	const scenesByTurn = useMemo(() => groupByTurn(scenes), [scenes]);
 	
+	
+	
 	return (
 		<div className={styles.timelineContainer}>
 			{Object.keys(scenesByTurn).map(turnNumber => (
@@ -29,7 +31,7 @@ function SceneTimeline() {
 					<h4 className={styles.turnMarker}>Turn {turnNumber}</h4>
 					<div className={styles.scenesContainer}>
 						{scenesByTurn[turnNumber].map(scene => (
-							<button key={scene.id} className={styles.scenePip} onClick={() => setSelectedScene(scene)}>
+							<button key={scene.id} className={`${styles.scenePip} ${scene.resolved ? styles.resolved : ''}`} onClick={() => setSelectedScene(scene)}>
 								{scene.id}
 							</button>
 						))}
