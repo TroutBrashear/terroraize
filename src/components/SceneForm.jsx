@@ -9,7 +9,7 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 	const updateScene = useWorldStore((state) => state.updateScene);
 	const worldState = useWorldStore.getState();
 	
-	const { apiKey, modelName } = useSettingStore((state) => state.api);
+	const { apiKey, modelName } = useSettingStore((state) => state.writerSettings.api);
 	
 	
 	const [isLoading, setIsLoading] = useState(false);

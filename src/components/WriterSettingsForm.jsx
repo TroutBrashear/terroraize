@@ -3,10 +3,10 @@ import { useSettingStore } from '../state/settingStore';
 import styles from './Form.module.css';
 
 function WriterSettingsForm({onSaveComplete}) {
-	const updateSettings = useSettingStore((state) => state.setAPISettings);
+	const updateWriterSettings = useSettingStore((state) => state.setWriterAPISettings);
 	
-	const apiKey = useSettingStore((state) => state.api.apiKey);
-	const modelName = useSettingStore((state) => state.api.modelName);
+	const apiKey = useSettingStore((state) => state.writerSettings.api.apiKey);
+	const modelName = useSettingStore((state) => state.writerSettings.api.modelName);
 	
 	const [key, setKey] = useState(apiKey || '');
 	const [model, setModel] = useState(modelName || '');
@@ -20,7 +20,7 @@ function WriterSettingsForm({onSaveComplete}) {
 			modelName: model,
 		};
 		
-		updateSettings(newSettings)
+		updateWriterSettings(newSettings)
 		
 		onSaveComplete();
 	};
