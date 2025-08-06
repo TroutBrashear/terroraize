@@ -3,24 +3,31 @@ import { useSettingStore } from '../state/settingStore';
 import styles from './Form.module.css';
 
 function WriterSettingsForm({onSaveComplete}) {
-	const updateWriterSettings = useSettingStore((state) => state.setWriterAPISettings);
+	const updateAPISettings = useSettingStore((state) => state.setWriterAPISettings);
+	const updatePromptSettings = useSettingStore((state) => state.setWriterPromptSettings);
 	
-	const apiKey = useSettingStore((state) => state.writerSettings.api.apiKey);
+	const apiKey = useSettingStore((state) => state.writerSettings.api.key);
 	const modelName = useSettingStore((state) => state.writerSettings.api.modelName);
+	const promptText = useSettingStore((state) => state.writerSettings.prompt.text);
 	
 	const [key, setKey] = useState(apiKey || '');
 	const [model, setModel] = useState(modelName || '');
-	
+	const [pText, setPText] = useState(promptText || '');
 	
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		
-		const newSettings = {
-			apiKey: key,
+		const newAPISettings = {
+			key: key,
 			modelName: model,
 		};
+		const newPromptSettings = {
+			text: pText,
+		};
+		console.log(newAPISettings);
 		
-		updateWriterSettings(newSettings)
+		updateAPISettings(newAPISettings);
+		updatePromptSettings(newPromptSettings);
 		
 		onSaveComplete();
 	};
@@ -31,6 +38,8 @@ function WriterSettingsForm({onSaveComplete}) {
 			
 			<input className={styles.input}  value={key} onChange={(e) => setKey(e.target.value)} />
 			<input className={styles.input}  value={model} onChange={(e) => setModel(e.target.value)} />
+			
+			<input className={styles.input} value={pText} onChange={(e) => setPText(e.target.value)} />
 			
 			<button className={styles.submitButton} type="submit">Submit</button>
 		</form>

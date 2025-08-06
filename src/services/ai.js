@@ -4,7 +4,7 @@ export function buildScenePrompt(locationId, worldState) {
 	
 	const characters = worldState.characters.filter(char => char.currentLocationID === locationId);
 	
-	let prompt = "You are a writer. Please write a story scene based on the following details: \n\n";
+	let prompt = "\n";
 	
 	prompt += `Location: ${location.name}:`;
 	prompt += `${location.narrative.description}\n\n`;
@@ -36,6 +36,8 @@ export async function generateScene(prompt, apiKey, modelName){
 		'HTTP-Referer': 'http://localhost:5173', 
 		'X-Title': 'terroraize' 
 	};
+	
+	console.log(prompt);
 	
 	const body = {
 		model: modelName,
