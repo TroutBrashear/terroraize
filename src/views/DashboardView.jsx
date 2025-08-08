@@ -38,7 +38,7 @@ function DashboardView() {
 
   const [turnResolution, setTurnResolution] = useState(false); //is a turn actively being resolved? If so, some functionality is disabled to wait for AI services
   const { key, modelName } = useSettingStore((state) => state.writerSettings.api);
-
+  const promptText = useSettingStore((state) => state.writerSettings.prompt.text);
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -93,7 +93,7 @@ function DashboardView() {
 	}
 	  
 	for(const scen of unresScenes) {
-		const prompt = buildScenePrompt(scen.locationId, worldState);
+		const prompt = promptText + buildScenePrompt(scen.locationId, worldState);
 		
 		const output = await generateScene(prompt, key, modelName);
 		
