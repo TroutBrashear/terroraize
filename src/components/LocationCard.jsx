@@ -20,6 +20,8 @@ function LocationCard({ location, onEditClick, onDeleteClick, onSceneClick }) {
  
  const chars = useWorldStore((state) => state.characters);
  const charsHere = chars.filter(char => char.currentLocationID === location.id);
+ 
+ 
  return (
 	<div ref={setNodeRef} className={styles.card} style={style}>
       <h3 className={styles.name}>{location.name}</h3>

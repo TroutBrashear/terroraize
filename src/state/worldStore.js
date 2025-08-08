@@ -179,6 +179,10 @@ export const useWorldStore = create(
         return allCharacters.filter(char => char.currentLocationID === locationId);
       },
 
+	  getUnresolvedScenes: (turnId) => {
+		  const allScenes = get().scenes;
+		  return allScenes.filter(scene => scene.turn === turnId && scene.resolved === false)
+	  },
 	  
 	  advTurn: () => set((state) => ({
 		  meta: {

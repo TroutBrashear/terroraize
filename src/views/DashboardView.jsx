@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useWorldStore } from '../state/worldStore';
+import { useSettingStore } from '../state/settingStore';
 import LocationCard from '../components/LocationCard';
 import CharacterDisp from '../components/CharacterDisp';
 import Poppin from '../components/Poppin';
@@ -10,12 +11,14 @@ import WriterSettingsForm from '../components/WriterSettingsForm';
 import UnplacedContainer from '../components/UnplacedContainer';
 import styles from './DashboardView.module.css';
 import { DndContext, useDroppable } from '@dnd-kit/core';
+import { buildScenePrompt, generateScene } from '../services/ai';
+
 
 function DashboardView() {
   const locations = useWorldStore((state) => state.locations);
   const characters = useWorldStore((state) => state.characters);
   const currentTurn = useWorldStore((state) => state.meta.currentTurn);
-  console.log("The entire world state is:", currentTurn);
+  const worldState = useWorldStore.getState();
   const unplachars = characters.filter(char => char.currentLocationID === null);
 
   const [isCharPoppinOpen, setIsCharPoppinOpen] = useState(false);
@@ -30,6 +33,12 @@ function DashboardView() {
   const deleteCharacter = useWorldStore((state) => state.deleteCharacter);
   const deleteLocation = useWorldStore((state) => state.deleteLocation);
   const advTurn = useWorldStore((state) => state.advTurn);
+  const getUnresolvedScenes = useWorldStore((state) => state.getUnresolvedScenes);
+  const updateScene = useWorldStore((state) => state.updateScene);
+
+  const [turnResolution, setTurnResolution] = useState(false); //is a turn actively being resolved? If so, some functionality is disabled to wait for AI services
+  const { key, modelName } = useSettingStore((state) => state.writerSettings.api);
+
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -71,14 +80,38 @@ function DashboardView() {
 	setSelectedScene(null);
 	setLocationToEdit(locationId);
   };
-
+  
+  
+  const resTurn =  async () => {
+	setTurnResolution(true);
+	  
+	const unresScenes = getUnresolvedScenes(currentTurn);
+	  
+	if(unresScenes.length === 0) {
+		advTurn();
+		return;
+	}
+	  
+	for(const scen of unresScenes) {
+		const prompt = buildScenePrompt(scen.locationId, worldState);
+		
+		const output = await generateScene(prompt, key, modelName);
+		
+		updateScene(scen.id, { narrative: { narrationText: output }, resolved: true });
+	}		
+	advTurn();
+	setTurnResolution(false);
+  };
+  
+  
+  
   return (
 	<DndContext onDragEnd={handleDragEnd}>
     <div>
 	  <button onClick={() => setIsWSettingsPoppinOpen(true)}>AI Settings</button>
 	  <div className={styles.headerContainer}>
         <h1>{currentTurn}</h1>
-		<button onClick={() => advTurn()}> Advance Turn </button>
+		<button onClick={() => resTurn()}> Advance Turn </button>
       </div>
       <section>
         <h2>Locations</h2>
