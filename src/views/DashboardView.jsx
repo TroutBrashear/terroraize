@@ -12,6 +12,7 @@ import UnplacedContainer from '../components/UnplacedContainer';
 import styles from './DashboardView.module.css';
 import { DndContext, useDroppable } from '@dnd-kit/core';
 import { buildScenePrompt, generateScene } from '../services/ai';
+import TurnControl from '../components/TurnControl';
 
 
 function DashboardView() {
@@ -82,37 +83,12 @@ function DashboardView() {
   };
   
   
-  const resTurn =  async () => {
-	setTurnResolution(true);
-	  
-	const unresScenes = getUnresolvedScenes(currentTurn);
-	  
-	if(unresScenes.length === 0) {
-		advTurn();
-		return;
-	}
-	  
-	for(const scen of unresScenes) {
-		const prompt = promptText + buildScenePrompt(scen.locationId, worldState);
-		
-		const output = await generateScene(prompt, key, modelName);
-		
-		updateScene(scen.id, { narrative: { narrationText: output }, resolved: true });
-	}		
-	advTurn();
-	setTurnResolution(false);
-  };
-  
-  
   
   return (
 	<DndContext onDragEnd={handleDragEnd}>
     <div>
 	  <button onClick={() => setIsWSettingsPoppinOpen(true)}>AI Settings</button>
-	  <div className={styles.headerContainer}>
-        <h1>{currentTurn}</h1>
-		<button onClick={() => resTurn()}> Advance Turn </button>
-      </div>
+	  <TurnControl/>
       <section>
         <h2>Locations</h2>
 		<button onClick={() => setIsLocPoppinOpen(true)}>+ Create New Location</button>
