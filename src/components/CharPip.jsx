@@ -25,7 +25,7 @@ function CharPip({ character }) {
 
   
   return (
-    <div ref={setNodeRef} className={styles.pip} style={style} {...listeners} {...attributes}>
+    <div ref={setNodeRef} className={styles.pip} style={style} title={character.name} {...listeners} {...attributes}>
       <p className={styles.initial}>{initial}</p>
     </div>
   );
