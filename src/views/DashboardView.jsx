@@ -4,8 +4,6 @@ import { useSettingStore } from '../state/settingStore';
 import LocationCard from '../components/LocationCard';
 import CharacterDisp from '../components/CharacterDisp';
 import Poppin from '../components/Poppin';
-import CharacterForm from '../components/CharacterForm';
-import LocationForm from '../components/LocationForm';
 import SceneForm from '../components/SceneForm';
 import WriterSettingsForm from '../components/WriterSettingsForm';
 import UnplacedContainer from '../components/UnplacedContainer';
@@ -13,7 +11,7 @@ import styles from './DashboardView.module.css';
 import { DndContext, useDroppable } from '@dnd-kit/core';
 import { buildScenePrompt, generateScene } from '../services/ai';
 import TurnControl from '../components/TurnControl';
-
+import PoppinManager from '../components/managers/PoppinManager';
 
 function DashboardView() {
   const locations = useWorldStore((state) => state.locations);
@@ -22,13 +20,12 @@ function DashboardView() {
   const worldState = useWorldStore.getState();
   const unplachars = characters.filter(char => char.currentLocationID === null);
 
-  const [isCharPoppinOpen, setIsCharPoppinOpen] = useState(false);
-  const [characterToEdit, setCharacterToEdit] = useState(null);
-  const [isLocPoppinOpen, setIsLocPoppinOpen] = useState(false);
-  const [locationToEdit, setLocationToEdit] = useState(null);
   const [isScenePoppinOpen, setIsScenePoppinOpen] = useState(false);
   const [selectedScene, setSelectedScene] = useState(null);
   const [isWSettingsPoppinOpen, setIsWSettingsPoppinOpen] = useState(false);
+  
+  const [openPoppin, setOpenPoppin] = useState(null);
+  const [poppinData, setPoppinData] = useState(null);
   
   const moveCharacter = useWorldStore((state) => state.moveCharacter);
   const deleteCharacter = useWorldStore((state) => state.deleteCharacter);
@@ -67,22 +64,24 @@ function DashboardView() {
 	}
   };
 
-  const openEditor = (characterb) => {
-	setIsCharPoppinOpen(true);
-	setCharacterToEdit(characterb);
+  const openCharEditor = (characterb) => {
+	setOpenPoppin('character_form');
+	setPoppinData(characterb);
   }; 
   const openLocEditor = (locationb) => {
-	setIsLocPoppinOpen(true);
-	setLocationToEdit(locationb);
+	setOpenPoppin('location_form');
+	setPoppinData(locationb);
+	
   };
-  
   const addScene = (locationId) => {
-	setIsScenePoppinOpen(true);
-	setSelectedScene(null);
-	setLocationToEdit(locationId);
+	setOpenPoppin('scene_form');
+	setPoppinData(locationId);
   };
   
-  
+  const closePoppin = () => {
+	setOpenPoppin(null);
+	setPoppinData(null);
+  };
   
   return (
 	<DndContext onDragEnd={handleDragEnd}>
@@ -91,7 +90,7 @@ function DashboardView() {
 	  <TurnControl/>
       <section>
         <h2>Locations</h2>
-		<button onClick={() => setIsLocPoppinOpen(true)}>+ Create New Location</button>
+		<button onClick={() => openLocEditor(null)}>+ Create New Location</button>
         <div className={styles.dispContainer}>
           {locations.map((loc) => (
             <LocationCard key={loc.id} location={loc} onEditClick={openLocEditor} onDeleteClick={handleDeleteLocation} onSceneClick={addScene}/>
@@ -100,26 +99,20 @@ function DashboardView() {
       </section>
 	  <section>
         <h2>Characters</h2>
-		<button onClick={() => setIsCharPoppinOpen(true)}>+ Create New Character</button>
+		<button onClick={() => openCharEditor(null)}>+ Create New Character</button>
         <div className="UnplacedDisplay">
-          <UnplacedContainer characters={unplachars} onEditClick={openEditor} onDeleteClick={handleDeleteCharacter}/>
+          <UnplacedContainer characters={unplachars} onEditClick={openCharEditor} onDeleteClick={handleDeleteCharacter}/>
         </div>
       </section>
 	  
 	  
-	  <Poppin isOpen={isCharPoppinOpen} onClose={() => setIsCharPoppinOpen(false)}>
-        <CharacterForm characterToEdit={characterToEdit} onSaveComplete={() => {setIsCharPoppinOpen(false); setCharacterToEdit(null);}} />
-      </Poppin>
-	  <Poppin isOpen={isLocPoppinOpen} onClose={() => setIsLocPoppinOpen(false)}>
-        <LocationForm locationToEdit={locationToEdit} onSaveComplete={() => {setIsLocPoppinOpen(false); setLocationToEdit(null);}} />
-      </Poppin>
-	  <Poppin isOpen={isScenePoppinOpen} onClose={() => setIsScenePoppinOpen(false)}>
-		<SceneForm scene={selectedScene} locationId={locationToEdit} onSaveComplete={() => {setIsScenePoppinOpen(false); setLocationToEdit(null);}}/>
-	  </Poppin>
+	 
+	  
 	  <Poppin isOpen={isWSettingsPoppinOpen} onClose={() => setIsWSettingsPoppinOpen(false)}>
 		<WriterSettingsForm onSaveComplete={() => {setIsWSettingsPoppinOpen(false);}}/>
 	  </Poppin>
-    </div>
+	  <PoppinManager poppinType={openPoppin} data={poppinData} onClose={closePoppin}/>
+	</div>
 	</DndContext>
   );
 }

@@ -1,0 +1,37 @@
+import React, { useState } from 'react';
+import Poppin from '../Poppin';
+import CharacterForm from '../CharacterForm';
+import LocationForm from '../components/LocationForm';
+
+function PoppinManager({poppinType, data, onClose}) {
+	
+	if(!poppinType) {
+		return null;
+	}
+	
+	
+	switch(poppinType) {
+		case 'character_form':
+			return(
+				<Poppin isOpen={true} onClose={onClose}>
+					<CharacterForm characterToEdit={data} onSaveComplete={onClose} />
+				</Poppin>
+			);
+		case 'location_form':
+			return(
+				<Poppin isOpen={true} onClose={onClose}>
+					<LocationForm locationToEdit={data} onSaveComplete={onClose} />
+				</Poppin>
+			);
+		case 'scene_form': //a new scene, for now, I guess.
+			return(
+				<Poppin isOpen={true} onClose={(onClose}>
+					<SceneForm scene={null} locationId={data} onSaveComplete={onClose}/>
+				</Poppin>
+			);
+		default:
+			return null;
+	}
+};
+
+export default PoppinManager;

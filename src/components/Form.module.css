@@ -28,10 +28,9 @@
   font-size: 1rem;
   font-family: inherit; 
   resize: vertical; 
-  min-height: 40vh;
-  overflow-y: auto;
-  width: 300%; /*bleh. come back to this.*/
+  width: 300%; 
 }
+
 
 .submitButton {
   background-color: #4a90e2; /* A nice blue */
