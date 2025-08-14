@@ -28,6 +28,8 @@
   font-size: 1rem;
   font-family: inherit; 
   resize: vertical; 
+  min-height: 40vh;
+  overflow-y: auto;
   width: 300%; /*bleh. come back to this.*/
 }
 
