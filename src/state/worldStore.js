@@ -24,8 +24,8 @@ export const useWorldStore = create(
     narrative: {
       description: "A bitter knight haunted by past failures.",
 	  goals: [],
+	  sceneHistory: [],
     },
-    // ... etc
 	}],
 
       locations: [{ //SAMPLE LOCATION FOR TESTING PURPOSES TODO: REMOVE ONCE THEY CAN BE CREATED
@@ -61,6 +61,7 @@ export const useWorldStore = create(
 		  narrative: {
 			...newCharacterData.narrative,
 			goals: [],
+			sceneHistory: [],
 		  },
         };
         return {
