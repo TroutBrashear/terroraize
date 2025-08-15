@@ -1,8 +1,8 @@
 
-export function buildScenePrompt(locationId, worldState) {
-	const location = worldState.locations.find(loc => loc.id === locationId);
+export function buildScenePrompt(promptData, worldState) {
+	const location = worldState.locations.find(loc => loc.id === promptData.locationId);
 	
-	const characters = worldState.characters.filter(char => char.currentLocationID === locationId);
+	const characters = promptData.characterIds.map(charid => worldState.characters.find(character => character.id === charid));
 	
 	let prompt = "\n";
 	

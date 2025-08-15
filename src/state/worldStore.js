@@ -44,7 +44,8 @@ export const useWorldStore = create(
 		resolved: false,
 		locationId: 1,
 		narrative: {
-			narrationText: "Scoopy went in the front door and ate like 16 sandwiches."
+			narrationText: "Scoopy went in the front door and ate like 16 sandwiches.",
+			presentCharacters: []
 		}
 	  }],
 

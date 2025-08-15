@@ -16,15 +16,20 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 	const [nText, setNText] = useState('');
 	const [sLocation, setSLocation] = useState('');
 	const [resolved, setResolved] = useState(false);
+	const [presentCharacters, setPresentCharacters] = useState([]);
 	
 	useEffect(() => {
 	  if(scene) {
 		setNText(scene.narrative.narrationText || '');
 		setSLocation(scene.locationId || '');
 		setResolved(scene.resolved || false);
+		setPresentCharacters(scene.narrative.presentCharacters || []);
 	  }
 	  else {
 		setSLocation(locationId);
+		const charsHere = worldState.characters.filter(char => char.currentLocationID === locationId);
+		const charIds = charsHere.map(char => char.id);
+		setPresentCharacters(charIds);
 	  }
 	}, [scene]);
 	
@@ -35,7 +40,8 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 			locationId: sLocation,
 			resolved: resolved,
 			narrative: {
-				narrationText: nText
+				narrationText: nText,
+				presentCharacters: presentCharacters
 			}
 		};
 		if(scene) {
@@ -49,8 +55,8 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 	
 	const handleSceneGenerate = async () => {
 		setIsLoading(true);
-		
-		const prompt = text + buildScenePrompt(sLocation, worldState);
+		const promptData = {locationId: sLocation, characterIds: presentCharacters };
+		const prompt = text + buildScenePrompt(promptData, worldState);
 		
 		const aiResponse = await generateScene(prompt, key, modelName);
 		setNText(aiResponse);
