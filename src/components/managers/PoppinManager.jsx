@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import Poppin from '../Poppin';
 import CharacterForm from '../CharacterForm';
-import LocationForm from '../components/LocationForm';
+import LocationForm from '../LocationForm';
+import SceneForm from '../SceneForm';
+import WriterSettingsForm from '../WriterSettingsForm';
 
 function PoppinManager({poppinType, data, onClose}) {
 	
@@ -25,8 +27,14 @@ function PoppinManager({poppinType, data, onClose}) {
 			);
 		case 'scene_form': //a new scene, for now, I guess.
 			return(
-				<Poppin isOpen={true} onClose={(onClose}>
+				<Poppin isOpen={true} onClose={onClose}>
 					<SceneForm scene={null} locationId={data} onSaveComplete={onClose}/>
+				</Poppin>
+			);
+		case 'writer_settings_form':
+			return(
+				<Poppin isOpen={true} onClose={onClose}>
+					<WriterSettingsForm onSaveComplete={onClose}/>
 				</Poppin>
 			);
 		default:

@@ -4,8 +4,6 @@ import { useSettingStore } from '../state/settingStore';
 import LocationCard from '../components/LocationCard';
 import CharacterDisp from '../components/CharacterDisp';
 import Poppin from '../components/Poppin';
-import SceneForm from '../components/SceneForm';
-import WriterSettingsForm from '../components/WriterSettingsForm';
 import UnplacedContainer from '../components/UnplacedContainer';
 import styles from './DashboardView.module.css';
 import { DndContext, useDroppable } from '@dnd-kit/core';
@@ -19,10 +17,6 @@ function DashboardView() {
   const currentTurn = useWorldStore((state) => state.meta.currentTurn);
   const worldState = useWorldStore.getState();
   const unplachars = characters.filter(char => char.currentLocationID === null);
-
-  const [isScenePoppinOpen, setIsScenePoppinOpen] = useState(false);
-  const [selectedScene, setSelectedScene] = useState(null);
-  const [isWSettingsPoppinOpen, setIsWSettingsPoppinOpen] = useState(false);
   
   const [openPoppin, setOpenPoppin] = useState(null);
   const [poppinData, setPoppinData] = useState(null);
@@ -77,7 +71,10 @@ function DashboardView() {
 	setOpenPoppin('scene_form');
 	setPoppinData(locationId);
   };
-  
+  const openWriterSettings = () => {
+	setOpenPoppin('writer_settings_form');
+	setPoppinData('');
+  };
   const closePoppin = () => {
 	setOpenPoppin(null);
 	setPoppinData(null);
@@ -86,7 +83,7 @@ function DashboardView() {
   return (
 	<DndContext onDragEnd={handleDragEnd}>
     <div>
-	  <button onClick={() => setIsWSettingsPoppinOpen(true)}>AI Settings</button>
+	  <button onClick={() => openWriterSettings()}>AI Settings</button>
 	  <TurnControl/>
       <section>
         <h2>Locations</h2>
@@ -105,12 +102,6 @@ function DashboardView() {
         </div>
       </section>
 	  
-	  
-	 
-	  
-	  <Poppin isOpen={isWSettingsPoppinOpen} onClose={() => setIsWSettingsPoppinOpen(false)}>
-		<WriterSettingsForm onSaveComplete={() => {setIsWSettingsPoppinOpen(false);}}/>
-	  </Poppin>
 	  <PoppinManager poppinType={openPoppin} data={poppinData} onClose={closePoppin}/>
 	</div>
 	</DndContext>
