@@ -174,6 +174,27 @@ export const useWorldStore = create(
 		  }),
 	  })),
 	  
+	  manageSceneResolution: (scene) => set((state) => {
+		 if(!scene.narrative.charactersPresent) {
+			return {};
+		 }
+		 
+		 const updatedCharacters = state.characters.map(char => {
+			 if(scene.narrative.charactersPresent.includes(char.id)) {
+				 const newHistory = [...character.narrative.sceneHistory, scene.id];
+				 
+				 
+				 return {
+					...char, narrative: { ...char.narrative, sceneHistory: newHistory },
+				 };
+			 }
+			 else {
+				return char;
+			 }
+		 });
+		 
+		 return {characters: updatedCharacters };
+	  }),
 
       getCharactersByLocationId: (locationId) => {
         // The `get` function gives us access to the current state

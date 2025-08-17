@@ -24,7 +24,9 @@ function TurnControl() {
 	}
 	  
 	for(const scen of unresScenes) {
-		const prompt = promptText + buildScenePrompt(scen.locationId, worldState);
+		const promptData = {locationId: scen.locationId, characterIds: scen.narrative.presentCharacters };
+		
+		const prompt = promptText + buildScenePrompt(promptData, worldState);
 		
 		const output = await generateScene(prompt, key, modelName);
 		
