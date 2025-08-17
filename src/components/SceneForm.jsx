@@ -8,6 +8,7 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 	const addScene = useWorldStore((state) => state.addScene);
 	const updateScene = useWorldStore((state) => state.updateScene);
 	const worldState = useWorldStore.getState();
+	const manageSceneResolution = useWorldStore((state) => state.manageSceneResolution);
 	
 	const { key, modelName } = useSettingStore((state) => state.writerSettings.api);
 	const { text } = useSettingStore((state) => state.writerSettings.prompt);
@@ -62,7 +63,7 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 		setNText(aiResponse);
 		
 		setResolved(true);
-		
+		manageSceneResolution(scene);
 		setIsLoading(false);
 	};
 	

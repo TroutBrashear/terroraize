@@ -183,7 +183,6 @@ export const useWorldStore = create(
 			 if(scene.narrative.charactersPresent.includes(char.id)) {
 				 const newHistory = [...character.narrative.sceneHistory, scene.id];
 				 
-				 
 				 return {
 					...char, narrative: { ...char.narrative, sceneHistory: newHistory },
 				 };

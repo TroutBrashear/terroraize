@@ -9,10 +9,12 @@ function WriterSettingsForm({onSaveComplete}) {
 	const apiKey = useSettingStore((state) => state.writerSettings.api.key);
 	const modelName = useSettingStore((state) => state.writerSettings.api.modelName);
 	const promptText = useSettingStore((state) => state.writerSettings.prompt.text);
+	const memoryDepth = useSettingStore((state) => state.writerSettings.prompt.memoryDepth);
 	
 	const [key, setKey] = useState(apiKey || '');
 	const [model, setModel] = useState(modelName || '');
 	const [pText, setPText] = useState(promptText || '');
+	const [mDepth, setMDepth] = useState(memoryDepth || '');
 	
 	const handleSubmit = (event) => {
 		event.preventDefault();
@@ -23,6 +25,7 @@ function WriterSettingsForm({onSaveComplete}) {
 		};
 		const newPromptSettings = {
 			text: pText,
+			memoryDepth: mDepth,
 		};
 		console.log(newAPISettings);
 		
@@ -40,6 +43,8 @@ function WriterSettingsForm({onSaveComplete}) {
 			<input className={styles.input}  value={model} onChange={(e) => setModel(e.target.value)} />
 			
 			<input className={styles.input} value={pText} onChange={(e) => setPText(e.target.value)} />
+			<input className={styles.input} value={mDepth} onChange={(e) => setMDepth(e.target.value)} />
+			
 			
 			<button className={styles.submitButton} type="submit">Submit</button>
 		</form>

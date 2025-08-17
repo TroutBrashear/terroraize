@@ -8,6 +8,7 @@ function TurnControl() {
   const currentTurn = useWorldStore((state) => state.meta.currentTurn);
   const advTurn = useWorldStore((state) => state.advTurn);
   const getUnresolvedScenes = useWorldStore((state) => state.getUnresolvedScenes);
+  const manageSceneResolution = useWorldStore((state) => state.manageSceneResolution);
   const updateScene = useWorldStore((state) => state.updateScene);
   const [turnResolution, setTurnResolution] = useState(false); //is a turn actively being resolved? If so, some functionality is disabled to wait for AI services
   const { key, modelName } = useSettingStore((state) => state.writerSettings.api);
@@ -20,6 +21,7 @@ function TurnControl() {
 	  
 	if(unresScenes.length === 0) {
 		advTurn();
+		setTurnResolution(false);
 		return;
 	}
 	  
@@ -31,6 +33,7 @@ function TurnControl() {
 		const output = await generateScene(prompt, key, modelName);
 		
 		updateScene(scen.id, { narrative: { narrationText: output }, resolved: true });
+		manageSceneResolution(scen);
 	}		
 	advTurn();
 	setTurnResolution(false);

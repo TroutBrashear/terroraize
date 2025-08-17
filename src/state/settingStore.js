@@ -10,6 +10,7 @@ export const useSettingStore = create(
 			},
 			prompt: {
 				text: '',
+				memoryDepth: 3,
 			},
 		},
 		
