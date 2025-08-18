@@ -57,11 +57,10 @@ export const useWorldStore = create(
           ...newCharacterData,
           currentLocationID: null, // Always start unassigned
 		  presentation: {
-			color: "#ddbb54",
+			...newCharacterData.presentation,
 		  },
 		  narrative: {
 			...newCharacterData.narrative,
-			goals: [],
 			sceneHistory: [],
 		  },
         };
@@ -82,11 +81,16 @@ export const useWorldStore = create(
 	  
 	  addScene: (newSceneData) => set((state) => {
 		const newId = state.meta.lastSceneId + 1;
+		const charactersPresent = newSceneData.narrative.charactersPresent || [];
 		const newScene = {
 			id: newId,
 			turn: state.meta.currentTurn,
-			status: 'pending',
-			...newSceneData
+			resolved: newSceneData.resolved,
+			locationId: newSceneData.locationId,
+			narrative: {
+				narrationText: newSceneData.narrative.narrationText || '',
+				charactersPresent: charactersPresent,
+			}
 		};
 		return { 
 			scenes: [...state.scenes, newScene],
@@ -179,9 +183,11 @@ export const useWorldStore = create(
 			return {};
 		 }
 		 
+		 console.log('logging scene history');
+		 
 		 const updatedCharacters = state.characters.map(char => {
 			 if(scene.narrative.charactersPresent.includes(char.id)) {
-				 const newHistory = [...character.narrative.sceneHistory, scene.id];
+				 const newHistory = [...char.narrative.sceneHistory, scene.id];
 				 
 				 return {
 					...char, narrative: { ...char.narrative, sceneHistory: newHistory },

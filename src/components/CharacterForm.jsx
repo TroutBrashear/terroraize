@@ -30,26 +30,37 @@ function CharacterForm({ characterToEdit, onSaveComplete }) {
 
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevents the browser from reloading the page
-
-    // Construct the character data object based on our store's structure
-    const newCharacterData = {
-      name: name,
-      narrative: {
-        description: description,
-		goals: goals
-      },
-      // We can add other layers here later
-      simulation: {},
-      presentation: {
-		color: color
-	  }
-    };
     
     // Either update or create the character
 	if(characterToEdit){
+		const newCharacterData = {
+			name: name,
+			narrative: {
+				...characterToEdit.narrative,
+				description: description,
+				goals: goals
+			},
+			// We can add other layers here later
+			simulation: {},
+			presentation: {
+				color: color
+			}
+		};
 		updateCharacter(characterToEdit.id, newCharacterData);
 	}
 	else {
+		const newCharacterData = {
+			name: name,
+			narrative: {
+				description: description,
+				goals: goals
+			},
+			// We can add other layers here later
+			simulation: {},
+			presentation: {
+				color: color
+			}
+		};
 		addCharacter(newCharacterData);
 	}
 	
