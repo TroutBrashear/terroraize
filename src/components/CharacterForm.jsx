@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useWorldStore } from '../state/worldStore';
+import { useSettingStore } from '../state/settingStore';
 import styles from './Form.module.css';
 
 function CharacterForm({ characterToEdit, onSaveComplete }) {
@@ -12,6 +13,21 @@ function CharacterForm({ characterToEdit, onSaveComplete }) {
   const [description, setDescription] = useState('');
   const [goals, setGoals] = useState([]);
   const [color, setColor] = useState([]);
+
+  //recent scenes config
+  const memoryDepth = useSettingStore((state) => state.writerSettings.prompt.memoryDepth);
+  const allScenes = useWorldStore((state) => state.scenes);
+  const recentScenes = useMemo(() => {
+	if (!characterToEdit || !characterToEdit.narrative.sceneHistory) {
+	  return [];
+	}
+	  
+	const recentIds = characterToEdit.narrative.sceneHistory.slice(-memoryDepth);
+	const scenes = recentIds.map(id =>
+		allScenes.find(s=> s.id === id)
+	);
+	return scenes;
+  }, [characterToEdit, memoryDepth, allScenes]);
 
   useEffect(() => {
 	if(characterToEdit) {
@@ -103,6 +119,12 @@ function CharacterForm({ characterToEdit, onSaveComplete }) {
 	  <div className={styles.formGroup}>
 		<label className={styles.label} htmlFor="color">Color</label>
 		<input type="color" value={color} onChange={(e) => setColor(e.target.value)} />
+	  </div>
+	  
+	  <div className={styles.memoryGroup}>
+		  {recentScenes.map(scene=> (
+			  <button key={scene.id} type="button" className={styles.memoryButton}> {scene.id}</button>
+		  ))}
 	  </div>
 	  
       <div className={styles.formGroup}>
