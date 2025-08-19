@@ -12,6 +12,10 @@ export const useSettingStore = create(
 				text: '',
 				memoryDepth: 3,
 			},
+			atmosphere: {
+				text: '',
+				resetEachTurn: true
+			},
 		},
 		
 		setWriterAPISettings: (newAPISettings) => set((state) => ({
@@ -32,6 +36,16 @@ export const useSettingStore = create(
 				prompt: {
 					...state.writerSettings.prompt,
 					...newPromptSettings,
+				}
+			}
+		})),
+		setAtmoSettings: (newAtmoSettings) => set((state) => ({
+			writerSettings: {
+				...state.writerSettings,
+			
+				atmosphere: {
+					...state.writerSettings.atmosphere,
+					...newAtmoSettings,
 				}
 			}
 		})),
