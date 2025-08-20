@@ -109,6 +109,7 @@ export const useWorldStore = create(
 			return {
 				...char,
 				narrative: {
+					...char.narrative,
 					goals: updatedGoals,
 				},
 			};
