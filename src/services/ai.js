@@ -37,48 +37,30 @@ export function buildScenePrompt(promptData, worldState) {
 	return prompt;
 }
 
-export async function generateScene(prompt, apiKey, modelName){
-	const apiUrl = "/api/completions";
-	const headers = {
-		'Content-Type': 'application/json',
-		'Authorization': `Bearer ${apiKey}`,
-		'HTTP-Referer': 'http://localhost:5173', 
-		'X-Title': 'terroraize' 
-	};
-	
-	console.log(prompt);
-	
-	const body = {
-		model: modelName,
-		prompt: prompt,
-		max_tokens: 1500,
-		temperature: 0.7,
-	};
-	
-	
-	try {
-		const response = await fetch(apiUrl, {
-			method: 'POST',
-			headers: headers,
-			body: JSON.stringify(body)
-		});
-		
-		if (!response.ok) {
-			const errorData = await response.json();
-			console.error(errorData);
-			throw new Error(`API Error: ${response.status} - ${errorData.error.message || JSON.stringify(errorData)}`);
-		}
-		
-		const data = await response.json();
-		
-		
-		if(data.choices && data.choices[0]) {
-			return data.choices[0].text;
-		}else{
-			throw new Error("API did not return choices.");
-		}
-	} catch (error) {
-		console.error("Scene Generation Failed. ", error);
-		return `Error: Could not generate scene. Details: ${error.message}`;
-	}
+export async function generateScene(prompt, modelName){
+	  try {
+    const response = await fetch('/api/generate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ prompt, modelName }), 
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error?.message || 'Failed to generate scene.');
+    }
+
+    const data = await response.json();
+
+    if (data.choices && data.choices[0]) {
+      return data.choices[0].text;
+    } else {
+      throw new Error("API response did not contain expected choices.");
+    }
+  } catch (error) {
+    console.error("Scene Generation Failed. ", error);
+    throw error;
+  }
 }

@@ -1,38 +1,52 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSettingStore } from '../state/settingStore';
+import { saveApiKey } from '../services/settings'; 
 import styles from './Form.module.css';
 
 function WriterSettingsForm({onSaveComplete}) {
 	const updateAPISettings = useSettingStore((state) => state.setWriterAPISettings);
 	const updatePromptSettings = useSettingStore((state) => state.setWriterPromptSettings);
 	
-	const apiKey = useSettingStore((state) => state.writerSettings.api.key);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [error, setError] = useState(null);
+	
 	const modelName = useSettingStore((state) => state.writerSettings.api.modelName);
 	const promptText = useSettingStore((state) => state.writerSettings.prompt.text);
 	const memoryDepth = useSettingStore((state) => state.writerSettings.prompt.memoryDepth);
 	
-	const [key, setKey] = useState(apiKey || '');
+	const [key, setKey] = useState('');
 	const [model, setModel] = useState(modelName || '');
 	const [pText, setPText] = useState(promptText || '');
 	const [mDepth, setMDepth] = useState(memoryDepth || '');
 	
-	const handleSubmit = (event) => {
+	const handleSubmit = async (event) => {
 		event.preventDefault();
+		setIsSubmitting(true);
+		setError(null);
 		
-		const newAPISettings = {
-			key: key,
-			modelName: model,
-		};
-		const newPromptSettings = {
-			text: pText,
-			memoryDepth: mDepth,
-		};
-		console.log(newAPISettings);
+		try {
+			await saveApiKey(key);
+			
+			const newAPISettings = {
+				modelName: model,
+			};
+			const newPromptSettings = {
+				text: pText,
+				memoryDepth: mDepth,
+			};
+			console.log(newAPISettings);
 		
-		updateAPISettings(newAPISettings);
-		updatePromptSettings(newPromptSettings);
+			updateAPISettings(newAPISettings);
+			updatePromptSettings(newPromptSettings);
 		
-		onSaveComplete();
+			onSaveComplete();
+		} 
+		catch(err){
+			setError(err.message || 'Error occurred.');
+		}
+		finally {
+			setIsSubmitting(false);
+		}
 	};
 	
 	return (
@@ -46,7 +60,7 @@ function WriterSettingsForm({onSaveComplete}) {
 			<input className={styles.input} value={mDepth} onChange={(e) => setMDepth(e.target.value)} />
 			
 			
-			<button className={styles.submitButton} type="submit">Submit</button>
+			<button className={styles.submitButton} type="submit" disabled={isSubmitting}>Submit</button>
 		</form>
 	);
 }
