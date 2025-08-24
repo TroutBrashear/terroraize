@@ -3,7 +3,7 @@ import { useWorldStore } from '../state/worldStore';
 import { useSettingStore } from '../state/settingStore';
 import { buildScenePrompt, generateScene } from '../services/ai';
 
-function TurnControl() {
+function TurnControl({openTurnSettings}) {
   const worldState = useWorldStore.getState();
   const currentTurn = useWorldStore((state) => state.meta.currentTurn);
   const advTurn = useWorldStore((state) => state.advTurn);
@@ -44,6 +44,7 @@ function TurnControl() {
 	<div className="turn-control"> 
 	  <h1>{currentTurn}</h1>
 	  <button onClick={() => resTurn()}> Advance Turn </button>
+	  <button onClick={openTurnSettings}> Turn Settings </button>
 	</div>
   );
 }

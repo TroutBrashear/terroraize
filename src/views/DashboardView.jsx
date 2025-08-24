@@ -75,6 +75,10 @@ function DashboardView() {
 	setOpenPoppin('writer_settings_form');
 	setPoppinData('');
   };
+  const openTurnSettings = () => {
+	setOpenPoppin('turn_settings_form');
+	setPoppinData('');
+  };
   const closePoppin = () => {
 	setOpenPoppin(null);
 	setPoppinData(null);
@@ -84,7 +88,7 @@ function DashboardView() {
 	<DndContext onDragEnd={handleDragEnd}>
     <div>
 	  <button onClick={() => openWriterSettings()}>AI Settings</button>
-	  <TurnControl/>
+	  <TurnControl openTurnSettings={openTurnSettings}/>
       <section>
         <h2>Locations</h2>
 		<button onClick={() => openLocEditor(null)}>+ Create New Location</button>

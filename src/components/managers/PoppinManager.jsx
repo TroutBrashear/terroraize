@@ -4,6 +4,7 @@ import CharacterForm from '../CharacterForm';
 import LocationForm from '../LocationForm';
 import SceneForm from '../SceneForm';
 import WriterSettingsForm from '../WriterSettingsForm';
+import AtmosphereForm from '../AtmosphereForm';
 
 function PoppinManager({poppinType, data, onClose}) {
 	
@@ -35,6 +36,12 @@ function PoppinManager({poppinType, data, onClose}) {
 			return(
 				<Poppin isOpen={true} onClose={onClose}>
 					<WriterSettingsForm onSaveComplete={onClose}/>
+				</Poppin>
+			);
+		case 'turn_settings_form':
+			return(
+				<Poppin isOpen={true} onClose={onClose}>
+					<AtmosphereForm onSaveComplete={onClose}/>
 				</Poppin>
 			);
 		default:
