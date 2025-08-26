@@ -17,18 +17,23 @@ export const useWorldStore = create(
 		lastSceneId: 1,
       },
 
-      characters: [ { //SAMPLE CHARACTER FOR TESTING PURPOSES TODO: REMOVE ONCE THEY CAN BE CREATED
-    id: 1,
-    name: "Kaelen",
-    currentLocationID: null,
-    narrative: {
-      description: "A bitter knight haunted by past failures.",
-	  goals: [],
-	  sceneHistory: [],
-    },
-	}],
+	  characters: { 
+		entities: {
+			'1': {
+				id: 1,
+				name: "Kaelen",
+				currentLocationID: null,
+				narrative: {
+					description: "A bitter knight haunted by past failures.",
+					goals: [],
+					sceneHistory: [],
+				},
+			},
+		},
+		ids: [1]
+	  },
 
-      locations: [{ //SAMPLE LOCATION FOR TESTING PURPOSES TODO: REMOVE ONCE THEY CAN BE CREATED
+      locations: [{ 
       id: 1,
       name: "The Whispering Library",
       narrative: {
@@ -41,6 +46,7 @@ export const useWorldStore = create(
 	
 	  scenes: [{
 		id: 1,
+		turn: 1,
 		resolved: false,
 		locationId: 1,
 		narrative: {
@@ -65,7 +71,7 @@ export const useWorldStore = create(
 		  },
         };
         return {
-          characters: [...state.characters, newCharacter],
+          characters: { entities: { ...state.characters.entities, [newId]: newCharacter }, ids: [...state.characters.ids, newId] },
           meta: { ...state.meta, lastCharacterId: newId },
         };
       }),
@@ -98,41 +104,69 @@ export const useWorldStore = create(
 		};
 	  }),
 	
-	  addGoal: (characterId, newGoal) => set((state) => ({
-		characters: state.characters.map(char => {
-			if (char.id !== characterId) {
-				return char; // Not the right character, do nothing.
-			}
-
-			const updatedGoals = [...char.narrative.goals, newGoal];
+	  addGoal: (characterId, newGoal) => set((state) => {
+		const characterToUpdate = state.characters.entities[characterId];
 		
-			return {
-				...char,
-				narrative: {
-					...char.narrative,
-					goals: updatedGoals,
-				},
-			};
-		})
-	  })),
+		const updatedGoals = [...characterToUpdate.narrative.goals, newGoal];
+		
+		const updatedCharacter = {
+			...characterToUpdate,
+			narrative: {
+				...characterToUpdate.narrative,
+				goals: updatedGoals,
+			},
+		};	
+
+		return {
+			characters: {
+				...state.characters,
+				entities: {
+					...state.characters.entities,
+					[characterId]: updatedCharacter
+				}
+			}
+		};
+	  }),
 
       // Moves a character to a location (or to unassigned if locationId is null)
-      moveCharacter: (characterId, locationId) => set((state) => ({
-        characters: state.characters.map(char =>
-          char.id === characterId
-            ? { ...char, currentLocationID: locationId }
-            : char
-        ),
-      })),
+      moveCharacter: (characterId, locationId) => set((state) => {
+        const characterToUpdate = state.characters.entities[characterId];
+		
+		const updatedCharacter = {
+			...characterToUpdate,
+			currentLocationID: locationId,
+		};	
+
+		return {
+			characters: {
+				...state.characters,
+				entities: {
+					...state.characters.entities,
+					[characterId]: updatedCharacter
+				}
+			}
+		};
+      }),
 
       // A generic function to update any part of a character's data
-      updateCharacter: (characterId, updatedData) => set((state) => ({
-        characters: state.characters.map(char =>
-          char.id === characterId
-            ? { ...char, ...updatedData } // Merges the new data into the character
-            : char
-        ),
-      })),
+      updateCharacter: (characterId, updatedData) => set((state) => {
+        const characterToUpdate = state.characters.entities[characterId];
+		
+		const updatedCharacter = {
+			...characterToUpdate,
+			...updatedData,
+		};
+		
+        return {
+			characters: {
+				...state.characters,
+				entities: {
+					...state.characters.entities,
+					[characterId]: updatedCharacter
+				}
+			}
+		};
+      }),
 
 	  
 	  updateLocation: (locationId, updatedData) => set((state) => ({
@@ -151,25 +185,39 @@ export const useWorldStore = create(
 		),
 	  })),
 	  
-	  deleteCharacter: (characterId) => set((state) => ({
-		  characters: state.characters.filter(char => {
-			  return char.id !== characterId;
-		  }),
-	  })),
+	  deleteCharacter: (characterId) => set((state) => {
+		  const updatedCharacters = {...state.characters.entities};
+		  
+		  delete updatedCharacters[characterId];
+		  
+		  
+		  const updatedIds = state.characters.ids.filter(id => {
+			  return id !== characterId;
+		  });
+		  
+		  return {
+			characters: {
+				entities: updatedCharacters,
+				ids: updatedIds,
+			}				
+		  };
+	  }),
 	  
 	  deleteLocation: (locationId) => set((state) => {
 		  const updatedLocations = state.locations.filter(loc => loc.id !== locationId);
-		  const updatedCharacters = state.characters.map(char => {
-			  if(char.currentLocationID === locationId){
-				return { ...char, currentLocationID: null };
-			  }
-			  
-			return char;
+		  const updatedCharacters = {...state.characters.entities};
+		
+		state.characters.ids.forEach(charId => {
+			const character = updatedCharacters[charId];
+			
+			if(character.currentLocationId === locationId) {
+				updatedCharacters[charId] = { ...character, currentLocationID: null };
+			}
 		});
 		
 		return {
 			locations: updatedLocations,
-			characters: updatedCharacters,
+			characters: {  ...state.characters, entities: updatedCharacters}
 		};
 	  }),
 	  
@@ -180,31 +228,44 @@ export const useWorldStore = create(
 	  })),
 	  
 	  manageSceneResolution: (scene) => set((state) => {
-		 if(!scene.narrative.charactersPresent) {
+		if(!scene.narrative.charactersPresent) {
 			return {};
-		 }
+		}
+		
+		const updatedCharacters = { ...state.characters.entities };
 		 
-		 console.log('logging scene history');
+		scene.narrative.charactersPresent.forEach(characterId => {
+			const characterToUpdate = updatedCharacters[characterId];
+			
+			if(characterToUpdate) {
+				const newHistory = [...characterToUpdate.narrative.sceneHistory, scene.id];
+				
+				const updatedCharacter = {
+					...characterToUpdate,
+					narrative: {
+						...characterToUpdate.narrative,
+						sceneHistory: newHistory,
+					},
+				};
+				
+				updatedCharacters[characterId] = updatedCharacter;
+			}
+		});
 		 
-		 const updatedCharacters = state.characters.map(char => {
-			 if(scene.narrative.charactersPresent.includes(char.id)) {
-				 const newHistory = [...char.narrative.sceneHistory, scene.id];
-				 
-				 return {
-					...char, narrative: { ...char.narrative, sceneHistory: newHistory },
-				 };
-			 }
-			 else {
-				return char;
-			 }
-		 });
-		 
-		 return {characters: updatedCharacters };
+		return {
+			characters: { ...state.characters, entities: updatedCharacters },
+		};
 	  }),
-
+	  
+	  getCharacterById: (id) => get().characters.entities[id],
+	  
+	  getAllCharactersAsArray: () => {
+		const { ids, entities } = get().characters;
+		return ids.map(id => entities[id]);
+	  },
+	  
       getCharactersByLocationId: (locationId) => {
-        // The `get` function gives us access to the current state
-        const allCharacters = get().characters;
+        const allCharacters = get().getAllCharactersAsArray();
         return allCharacters.filter(char => char.currentLocationID === locationId);
       },
 
@@ -220,7 +281,7 @@ export const useWorldStore = create(
 	  }))
     }),
     {
-      name: 'terroraize', // The key used in localStorage
+      name: 'terroraize', 
     }
   )
 );

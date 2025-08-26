@@ -35,6 +35,7 @@ function AtmosphereForm({onSaveComplete}) {
 		<form className={styles.form} onSubmit={handleSubmit}>
 			<h2> Atmosphere Settings </h2>
 			
+			<label className={styles.label} htmlFor="text">Atmosphere Text </label>
 			<input className={styles.input} value={atmoText} onChange={(e) => setAtmoText(e.target.value)} />
 			
 			<input type="checkbox" id="reset-atmo-toggle" checked={resetToggle} onChange={handleCheckboxChange}/>

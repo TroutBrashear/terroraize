@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import DispDropdown from './DispDropdown';
 import styles from './LocationCard.module.css';
@@ -18,8 +18,10 @@ function LocationCard({ location, onEditClick, onDeleteClick, onSceneClick }) {
     backgroundColor: isOver ? '#3e3e3e' : '#2a2a2a',
   };
  
- const chars = useWorldStore((state) => state.characters);
- const charsHere = chars.filter(char => char.currentLocationID === location.id);
+  const characters = useWorldStore((state) => state.characters);
+  const charsHere = useMemo(() => {
+	return characters.ids.map(id => characters.entities[id]).filter(char => char.currentLocationID === location.id);  
+	}, [characters]);
  
  
  return (

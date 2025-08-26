@@ -53,10 +53,13 @@ function WriterSettingsForm({onSaveComplete}) {
 		<form className={styles.form} onSubmit={handleSubmit}>
 			<h2> Writer Settings </h2>
 			
+			<label className={styles.label} htmlFor="text">API Key </label>
 			<input className={styles.input}  value={key} onChange={(e) => setKey(e.target.value)} />
+			<label className={styles.label} htmlFor="text">AI Model </label>
 			<input className={styles.input}  value={model} onChange={(e) => setModel(e.target.value)} />
-			
+			<label className={styles.label} htmlFor="text">System Prompt </label>
 			<input className={styles.input} value={pText} onChange={(e) => setPText(e.target.value)} />
+			<label className={styles.label} htmlFor="text">Memory Depth </label>
 			<input className={styles.input} value={mDepth} onChange={(e) => setMDepth(e.target.value)} />
 			
 			

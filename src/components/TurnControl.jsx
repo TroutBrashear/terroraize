@@ -13,7 +13,11 @@ function TurnControl({openTurnSettings}) {
   const [turnResolution, setTurnResolution] = useState(false); //is a turn actively being resolved? If so, some functionality is disabled to wait for AI services
   const { key, modelName } = useSettingStore((state) => state.writerSettings.api);
   const { text, memoryDepth }= useSettingStore((state) => state.writerSettings.prompt);
-	
+  
+  const atmosphere = useSettingStore((state) => state.writerSettings.atmosphere.text);
+  const resetAtmo = useSettingStore((state) => state.writerSettings.atmosphere.resetEachTurn);
+  const updateAtmoSettings = useSettingStore((state) => state.setAtmoSettings);
+  
 	const resTurn =  async () => {
 	setTurnResolution(true);
 	  
@@ -21,6 +25,15 @@ function TurnControl({openTurnSettings}) {
 	  
 	if(unresScenes.length === 0) {
 		advTurn();
+		if(resetAtmo) {
+			const newAtmoSettings = {
+				text: '',
+				resetEachTurn: true,	
+			};
+		
+			updateAtmoSettings(newAtmoSettings);
+		}
+		
 		setTurnResolution(false);
 		return;
 	}
@@ -28,13 +41,21 @@ function TurnControl({openTurnSettings}) {
 	for(const scen of unresScenes) {
 		const promptData = {locationId: scen.locationId, characterIds: scen.narrative.charactersPresent, memoryDepth: memoryDepth };
 		
-		const prompt = text + buildScenePrompt(promptData, worldState);
+		const prompt = text + atmosphere + buildScenePrompt(promptData);
 		
 		const output = await generateScene(prompt, key, modelName);
 		
 		updateScene(scen.id, { narrative: { narrationText: output }, resolved: true });
 		manageSceneResolution(scen);
-	}		
+	}
+	if(resetAtmo) {
+		const newAtmoSettings = {
+			text: '',
+			resetEachTurn: true,	
+		};
+		
+		updateAtmoSettings(newAtmoSettings);
+	}
 	advTurn();
 	setTurnResolution(false);
   };

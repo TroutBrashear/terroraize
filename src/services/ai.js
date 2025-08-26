@@ -1,8 +1,11 @@
+import { useWorldStore } from '../state/worldStore';
 
-export function buildScenePrompt(promptData, worldState) {
-	const location = worldState.locations.find(loc => loc.id === promptData.locationId);
+export function buildScenePrompt(promptData) {
+	const worldStore = useWorldStore.getState();
 	
-	const characters = promptData.characterIds.map(charid => worldState.characters.find(character => character.id === charid));
+	const location = worldStore.locations.find(loc => loc.id === promptData.locationId);
+	
+	const characters = promptData.characterIds.map(charid => worldStore.getCharacterById(charid));
 	
 	let prompt = "\n";
 	
@@ -22,7 +25,7 @@ export function buildScenePrompt(promptData, worldState) {
 			if (curChar.narrative.sceneHistory.length > 0) {
 				const recentScenes = curChar.narrative.sceneHistory.slice(-promptData.memoryDepth);
 				recentScenes.forEach(scene => {
-					const indScene = worldState.scenes.find(s => s.id === scene);
+					const indScene = worldStore.scenes.find(s => s.id === scene);
 					prompt += `${indScene.narrative.narrationText}\n`;
 				});
 			}
@@ -38,29 +41,30 @@ export function buildScenePrompt(promptData, worldState) {
 }
 
 export async function generateScene(prompt, modelName){
-	  try {
-    const response = await fetch('/api/generate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ prompt, modelName }), 
-    });
+	try {
+		const response = await fetch('/api/generate', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ prompt, modelName }), 
+		});
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error?.message || 'Failed to generate scene.');
-    }
+		if (!response.ok) {
+			const errorData = await response.json();
+			throw new Error(errorData.error?.message || 'Failed to generate scene.');
+		}
 
-    const data = await response.json();
+		const data = await response.json();
 
-    if (data.choices && data.choices[0]) {
-      return data.choices[0].text;
-    } else {
-      throw new Error("API response did not contain expected choices.");
-    }
-  } catch (error) {
-    console.error("Scene Generation Failed. ", error);
-    throw error;
-  }
+		if (data.choices && data.choices[0]) {
+			return data.choices[0].text;
+		} 
+		else {
+			throw new Error("API response did not contain expected choices.");
+		}
+	} catch (error) {
+		console.error("Scene Generation Failed. ", error);
+		throw error;
+	}
 }

@@ -12,6 +12,7 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 	
 	const { modelName } = useSettingStore((state) => state.writerSettings.api);
 	const { text, memoryDepth } = useSettingStore((state) => state.writerSettings.prompt);
+	const atmosphere = useSettingStore((state) => state.writerSettings.atmosphere.text);
 	
 	const [isLoading, setIsLoading] = useState(false);
 	const [nText, setNText] = useState('');
@@ -28,7 +29,7 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 	  }
 	  else {
 		setSLocation(locationId);
-		const charsHere = worldState.characters.filter(char => char.currentLocationID === locationId);
+		const charsHere = worldState.characters.ids.map(id => worldState.characters.entities[id]).filter(char => char.currentLocationID === locationId);
 		const charIds = charsHere.map(char => char.id);
 		setPresentCharacters(charIds);
 	  }
@@ -57,7 +58,7 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 	const handleSceneGenerate = async () => {
 		setIsLoading(true);
 		const promptData = {locationId: sLocation, characterIds: presentCharacters, memoryDepth: memoryDepth };
-		const prompt = text + buildScenePrompt(promptData, worldState);
+		const prompt = text + atmosphere + buildScenePrompt(promptData);
 		
 		const aiResponse = await generateScene(prompt, modelName);
 		setNText(aiResponse);

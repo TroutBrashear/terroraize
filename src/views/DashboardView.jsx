@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useWorldStore } from '../state/worldStore';
 import { useSettingStore } from '../state/settingStore';
 import LocationCard from '../components/LocationCard';
@@ -13,10 +13,12 @@ import PoppinManager from '../components/managers/PoppinManager';
 
 function DashboardView() {
   const locations = useWorldStore((state) => state.locations);
-  const characters = useWorldStore((state) => state.characters);
   const currentTurn = useWorldStore((state) => state.meta.currentTurn);
-  const worldState = useWorldStore.getState();
-  const unplachars = characters.filter(char => char.currentLocationID === null);
+  
+  const characters = useWorldStore((state) => state.characters);
+  const unplachars = useMemo(() => {
+	return characters.ids.map(id => characters.entities[id]).filter(char => char.currentLocationID === null);  
+	}, [characters]);
   
   const [openPoppin, setOpenPoppin] = useState(null);
   const [poppinData, setPoppinData] = useState(null);
