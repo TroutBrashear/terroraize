@@ -49,16 +49,21 @@ export const useWorldStore = create(
 		ids: [1]
 	  },
 	
-	  scenes: [{
-		id: 1,
-		turn: 1,
-		resolved: false,
-		locationId: 1,
-		narrative: {
-			narrationText: "Scoopy went in the front door and ate like 16 sandwiches.",
-			presentCharacters: []
-		}
-	  }],
+	  scenes: {
+		entities: {
+			'1': {
+				id: 1,
+				turn: 1,
+				resolved: false,
+				locationId: 1,
+				narrative: {
+					narrationText: "Scoopy went in the front door and ate like 16 sandwiches.",
+					presentCharacters: []
+				}
+			}
+		},
+		ids: [1]
+	  },
 
     //FUNCTIONS
       addCharacter: (newCharacterData) => set((state) => {
@@ -104,7 +109,7 @@ export const useWorldStore = create(
 			}
 		};
 		return { 
-			scenes: [...state.scenes, newScene],
+			scenes: { entities: {...state.scenes.entities, [newId]: newScene}, ids: [...state.scenes.ids, newId]},
 			meta: { ...state.meta, lastSceneId: newId },
 		};
 	  }),
@@ -193,13 +198,24 @@ export const useWorldStore = create(
 		};
       }),
 	  
-	  updateScene: (sceneId, updatedData) => set((state) => ({
-		  scenes: state.scenes.map(scn =>
-			scn.id === sceneId
-			  ? { ...scn, ...updatedData }
-			  : scn
-		),
-	  })),
+	  updateScene: (sceneId, updatedData) => set((state) => {
+		const sceneToUpdate = state.scenes.entities[sceneId];
+		
+		const updatedScene = {
+			...sceneToUpdate,
+			...updatedData,
+		};
+		
+		return {
+			scenes: {
+				...state.scenes,
+				entities: {
+					...state.scenes.entities,
+					[sceneId]: updatedScene
+				}
+			}
+		};
+	  }),
 	  
 	  deleteCharacter: (characterId) => set((state) => {
 		  const updatedCharacters = {...state.characters.entities};
@@ -246,11 +262,22 @@ export const useWorldStore = create(
 		};
 	  }),
 	  
-	  deleteScene: (sceneId) => set((state) => ({
-		  scenes: state.scenes.filter(scn => {
-			return scn.id !== sceneId;
-		  }),
-	  })),
+	  deleteScene: (sceneId) => set((state) => {
+		const updatedScenes = {...state.scenes.entities};
+		
+		delete updatedScenes[sceneId];
+		
+		const updatedIds = state.scenes.ids.filter(id => {
+			  return id !== sceneId;
+		  });
+		  
+		return {
+			scenes: {
+				entities: updatedScenes,
+				ids: updatedIds,
+			}				
+		};
+	  }),
 	  
 	  manageSceneResolution: (scene) => set((state) => {
 		if(!scene.narrative.charactersPresent) {
@@ -300,9 +327,16 @@ export const useWorldStore = create(
 		const { ids, entities } = get().locations;
 		return ids.map(id => entities[id]);
 	  },
+	
+	  getSceneById: (id) => get().scenes.entities[id],
 
+	  getAllScenesAsArray: () => {
+		const { ids, entities } = get().scenes;
+		return ids.map(id => entities[id]);
+	  },
+	  
 	  getUnresolvedScenes: (turnId) => {
-		  const allScenes = get().scenes;
+		  const allScenes = get().getAllScenesAsArray();
 		  return allScenes.filter(scene => scene.turn === turnId && scene.resolved === false)
 	  },
 	  

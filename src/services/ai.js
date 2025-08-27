@@ -3,7 +3,7 @@ import { useWorldStore } from '../state/worldStore';
 export function buildScenePrompt(promptData) {
 	const worldStore = useWorldStore.getState();
 	
-	const location = worldStore.locations.find(loc => loc.id === promptData.locationId);
+	const location = worldStore.getLocationById(promptData.locationId);
 	
 	const characters = promptData.characterIds.map(charid => worldStore.getCharacterById(charid));
 	
@@ -25,7 +25,7 @@ export function buildScenePrompt(promptData) {
 			if (curChar.narrative.sceneHistory.length > 0) {
 				const recentScenes = curChar.narrative.sceneHistory.slice(-promptData.memoryDepth);
 				recentScenes.forEach(scene => {
-					const indScene = worldStore.scenes.find(s => s.id === scene);
+					const indScene = worldStore.getSceneById(scene);
 					prompt += `${indScene.narrative.narrationText}\n`;
 				});
 			}

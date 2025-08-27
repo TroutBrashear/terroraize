@@ -4,8 +4,11 @@ import Poppin from '../components/Poppin';
 import SceneForm from '../components/SceneForm';
 import styles from './SceneTimeline.module.css';
 
-function SceneTimeline() {
-	const scenes = useWorldStore((state) => state.scenes);
+function SceneTimeline() { 
+	const allScenes = useWorldStore((state) => state.scenes);
+	const scenes = useMemo(() => {
+		return allScenes.ids.map(id => allScenes.entities[id]);
+	}, [allScenes]);
 	const [selectedScene, setSelectedScene] = useState(null);
 	
 	const groupByTurn = (scenes) => {
