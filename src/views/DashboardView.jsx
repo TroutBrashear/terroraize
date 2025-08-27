@@ -12,8 +12,12 @@ import TurnControl from '../components/TurnControl';
 import PoppinManager from '../components/managers/PoppinManager';
 
 function DashboardView() {
-  const locations = useWorldStore((state) => state.locations);
   const currentTurn = useWorldStore((state) => state.meta.currentTurn);
+	
+  const allLocations = useWorldStore((state) => state.locations);
+  const locations = useMemo(() => {
+	  return allLocations.ids.map(id => allLocations.entities[id]);
+  }, [allLocations]);
   
   const characters = useWorldStore((state) => state.characters);
   const unplachars = useMemo(() => {

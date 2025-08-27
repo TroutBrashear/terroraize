@@ -33,16 +33,21 @@ export const useWorldStore = create(
 		ids: [1]
 	  },
 
-      locations: [{ 
-      id: 1,
-      name: "The Whispering Library",
-      narrative: {
-        description: "A towering, circular library filled with ancient, dust-covered tomes.",
-      },
-      presentation: {
-        imageUrl: "/images/locations/library.jpg" // We'll use this later
-      }
-    }],
+      locations: { 
+		entities: {
+			'1': {
+				id: 1,
+				name: "The Whispering Library",
+				narrative: {
+					description: "A towering, circular library filled with ancient, dust-covered tomes.",
+				},
+				presentation: {
+					imageUrl: "/images/locations/library.jpg" // We'll use this later
+				}
+			}
+		},
+		ids: [1]
+	  },
 	
 	  scenes: [{
 		id: 1,
@@ -80,7 +85,7 @@ export const useWorldStore = create(
         const newId = state.meta.lastLocationId + 1;
         const newLocation = { id: newId, ...newLocationData };
         return {
-          locations: [...state.locations, newLocation],
+          locations: { entities: {...state.locations.entities, [newId]: newLocation }, ids: [...state.locations.ids, newId]},
           meta: { ...state.meta, lastLocationId: newId },
         };
       }),
@@ -169,13 +174,24 @@ export const useWorldStore = create(
       }),
 
 	  
-	  updateLocation: (locationId, updatedData) => set((state) => ({
-        locations: state.locations.map(loc =>
-          loc.id === locationId
-            ? { ...loc, ...updatedData } // Merges the new data into the character
-            : loc
-        ),
-      })),
+	  updateLocation: (locationId, updatedData) => set((state) => {
+        const locationToUpdate = state.locations.entities[locationId];
+		
+		const updatedLocation = {
+			...locationToUpdate,
+			...updatedData,
+		};
+		
+		return {
+			locations: {
+				...state.locations,
+				entities: {
+					...state.locations.entities,
+					[locationId]: updatedLocation
+				}
+			}
+		};
+      }),
 	  
 	  updateScene: (sceneId, updatedData) => set((state) => ({
 		  scenes: state.scenes.map(scn =>
@@ -204,7 +220,7 @@ export const useWorldStore = create(
 	  }),
 	  
 	  deleteLocation: (locationId) => set((state) => {
-		  const updatedLocations = state.locations.filter(loc => loc.id !== locationId);
+		  const updatedLocations = {...state.locations.entities};
 		  const updatedCharacters = {...state.characters.entities};
 		
 		state.characters.ids.forEach(charId => {
@@ -215,8 +231,17 @@ export const useWorldStore = create(
 			}
 		});
 		
+		delete updatedLocations[locationId];
+		
+		const updatedIds = state.locations.ids.filter(id => {
+			return id !== locationId;
+		});
+		
 		return {
-			locations: updatedLocations,
+			locations: { 
+				entities: updatedLocations,
+				ids: updatedIds,
+			},
 			characters: {  ...state.characters, entities: updatedCharacters}
 		};
 	  }),
@@ -268,6 +293,13 @@ export const useWorldStore = create(
         const allCharacters = get().getAllCharactersAsArray();
         return allCharacters.filter(char => char.currentLocationID === locationId);
       },
+	
+	  getLocationById: (id) => get().locations.entities[id],
+
+	  getAllLocationsAsArray: () => {
+		const { ids, entities } = get().locations;
+		return ids.map(id => entities[id]);
+	  },
 
 	  getUnresolvedScenes: (turnId) => {
 		  const allScenes = get().scenes;
