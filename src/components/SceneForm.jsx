@@ -7,7 +7,6 @@ import { buildScenePrompt, generateScene } from '../services/ai';
 function SceneForm({ scene, locationId, onSaveComplete }) {
 	const addScene = useWorldStore((state) => state.addScene);
 	const updateScene = useWorldStore((state) => state.updateScene);
-	const worldState = useWorldStore.getState();
 	const manageSceneResolution = useWorldStore((state) => state.manageSceneResolution);
 	
 	const { modelName } = useSettingStore((state) => state.writerSettings.api);
@@ -18,7 +17,11 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 	const [nText, setNText] = useState('');
 	const [sLocation, setSLocation] = useState('');
 	const [resolved, setResolved] = useState(false);
+	
+	const characters = useWorldStore((state) => state.characters);
 	const [presentCharacters, setPresentCharacters] = useState([]);
+	
+	const [error, setError] = useState(null);
 	
 	useEffect(() => {
 	  if(scene) {
@@ -29,11 +32,11 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 	  }
 	  else {
 		setSLocation(locationId);
-		const charsHere = worldState.characters.ids.map(id => worldState.characters.entities[id]).filter(char => char.currentLocationID === locationId);
+		const charsHere = characters.ids.map(id => characters.entities[id]).filter(char => char.currentLocationID === locationId);
 		const charIds = charsHere.map(char => char.id);
 		setPresentCharacters(charIds);
 	  }
-	}, [scene]);
+	}, [scene, characters, locationId]);
 	
 	const handleSubmit = (event) => {
 		event.preventDefault();
@@ -46,30 +49,47 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 				charactersPresent: presentCharacters
 			}
 		};
+		
+		let savedScene;
 		if(scene) {
-			updateScene(scene.id, newSceneData);
+			savedScene = updateScene(scene.id, newSceneData);
 		}	
 		else {
-			addScene(newSceneData);
+			savedScene = addScene(newSceneData);
 		}
+		
+		if(savedScene.resolved) {
+			manageSceneResolution(savedScene);
+		}	
+		
 		onSaveComplete();
 	};
 	
 	const handleSceneGenerate = async () => {
 		setIsLoading(true);
-		const promptData = {locationId: sLocation, characterIds: presentCharacters, memoryDepth: memoryDepth };
-		const prompt = text + atmosphere + buildScenePrompt(promptData);
+		try{
+			
+			const promptData = {locationId: sLocation, characterIds: presentCharacters, memoryDepth: memoryDepth };
+			const prompt = text + atmosphere + buildScenePrompt(promptData);
 		
-		const aiResponse = await generateScene(prompt, modelName);
-		setNText(aiResponse);
+			const aiResponse = await generateScene(prompt, modelName);
+			setNText(aiResponse);
 		
-		setResolved(true);
-		manageSceneResolution(scene);
-		setIsLoading(false);
+			setResolved(true);
+		}
+		catch(error){
+			console.error("Scene Generation Failed. ", error);
+			setError(error.message || "An unexpected error occurred.");
+		}
+		finally{
+			setIsLoading(false);
+		}
 	};
 	
 	return (
 		<form className={styles.form} onSubmit={handleSubmit}>
+		
+			 {error && <div className={styles.errorText}>{error}</div>}
 			<div className = {styles.formGroup}>
 				<label className={styles.label} htmlFor="text">Scene Text </label>
 				<textarea className={styles.textarea} type="text" id="name" value={nText} onChange={(e) => setNText(e.target.value)} />

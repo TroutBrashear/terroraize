@@ -95,7 +95,8 @@ export const useWorldStore = create(
         };
       }),
 	  
-	  addScene: (newSceneData) => set((state) => {
+	addScene: (newSceneData) => {
+		const state = get();
 		const newId = state.meta.lastSceneId + 1;
 		const charactersPresent = newSceneData.narrative.charactersPresent || [];
 		const newScene = {
@@ -108,11 +109,13 @@ export const useWorldStore = create(
 				charactersPresent: charactersPresent,
 			}
 		};
-		return { 
+		set({
 			scenes: { entities: {...state.scenes.entities, [newId]: newScene}, ids: [...state.scenes.ids, newId]},
 			meta: { ...state.meta, lastSceneId: newId },
-		};
-	  }),
+		});
+		
+		return newScene;
+	},
 	
 	  addGoal: (characterId, newGoal) => set((state) => {
 		const characterToUpdate = state.characters.entities[characterId];
@@ -198,7 +201,9 @@ export const useWorldStore = create(
 		};
       }),
 	  
-	  updateScene: (sceneId, updatedData) => set((state) => {
+	  updateScene: (sceneId, updatedData) => {
+		const state = get();
+		
 		const sceneToUpdate = state.scenes.entities[sceneId];
 		
 		const updatedScene = {
@@ -206,7 +211,7 @@ export const useWorldStore = create(
 			...updatedData,
 		};
 		
-		return {
+		set({
 			scenes: {
 				...state.scenes,
 				entities: {
@@ -214,8 +219,10 @@ export const useWorldStore = create(
 					[sceneId]: updatedScene
 				}
 			}
-		};
-	  }),
+		});
+		
+		return updatedScene;
+	  },
 	  
 	  deleteCharacter: (characterId) => set((state) => {
 		  const updatedCharacters = {...state.characters.entities};

@@ -64,7 +64,6 @@ export async function generateScene(prompt, modelName){
 			throw new Error("API response did not contain expected choices.");
 		}
 	} catch (error) {
-		console.error("Scene Generation Failed. ", error);
-		throw error;
+		
 	}
 }
