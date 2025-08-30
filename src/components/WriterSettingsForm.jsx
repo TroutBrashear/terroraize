@@ -14,6 +14,7 @@ function WriterSettingsForm({onSaveComplete}) {
 	const promptText = useSettingStore((state) => state.writerSettings.prompt.text);
 	const memoryDepth = useSettingStore((state) => state.writerSettings.prompt.memoryDepth);
 	
+	const isKeySet = useSettingStore((state) => state.writerSettings.api.isKeySet);
 	const [key, setKey] = useState('');
 	const [model, setModel] = useState(modelName || '');
 	const [pText, setPText] = useState(promptText || '');
@@ -53,14 +54,14 @@ function WriterSettingsForm({onSaveComplete}) {
 		<form className={styles.form} onSubmit={handleSubmit}>
 			<h2> Writer Settings </h2>
 			
-			<label className={styles.label} htmlFor="text">API Key </label>
-			<input className={styles.input}  value={key} onChange={(e) => setKey(e.target.value)} />
-			<label className={styles.label} htmlFor="text">AI Model </label>
-			<input className={styles.input}  value={model} onChange={(e) => setModel(e.target.value)} />
-			<label className={styles.label} htmlFor="text">System Prompt </label>
-			<input className={styles.input} value={pText} onChange={(e) => setPText(e.target.value)} />
-			<label className={styles.label} htmlFor="text">Memory Depth </label>
-			<input className={styles.input} value={mDepth} onChange={(e) => setMDepth(e.target.value)} />
+			<label className={styles.label} htmlFor="apiKey">API Key </label>
+			<input id="apiKey" className={styles.input} placeholder={isKeySet ? '••••••••••••••••' : 'Enter API Key'} value={key} onChange={(e) => setKey(e.target.value)} />
+			<label className={styles.label} htmlFor="modelName">AI Model </label>
+			<input id="modelName" className={styles.input}  value={model} onChange={(e) => setModel(e.target.value)} />
+			<label className={styles.label} htmlFor="sysPrompt">System Prompt </label>
+			<input id="sysPrompt" className={styles.input} value={pText} onChange={(e) => setPText(e.target.value)} />
+			<label className={styles.label} htmlFor="memDepth">Memory Depth </label>
+			<input id="memDepth" className={styles.input} value={mDepth} onChange={(e) => setMDepth(e.target.value)} />
 			
 			
 			<button className={styles.submitButton} type="submit" disabled={isSubmitting}>Submit</button>

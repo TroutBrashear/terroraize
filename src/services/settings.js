@@ -21,3 +21,18 @@ export async function saveApiKey(apiKey) {
     throw error;
   }
 }
+
+export async function fetchKeyStatus() {
+	try {
+		const response = await fetch('/api/key_status');
+		if(!response.ok){
+			console.error('API key status failed: ', response.status);
+			return false;
+		}
+		const data = await response.json();
+		return data.hasKey;
+	}
+	catch(error){
+			console.error('Failed to fetch API key status: ', error);
+	}
+}
