@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useWorldStore } from '../state/worldStore';
 import { useSettingStore } from '../state/settingStore';
+import { useModalStore } from '../state/modalStore';
 import LocationCard from '../components/LocationCard';
 import CharacterDisp from '../components/CharacterDisp';
 import Poppin from '../components/Poppin';
@@ -9,7 +10,6 @@ import styles from './DashboardView.module.css';
 import { DndContext, useDroppable } from '@dnd-kit/core';
 import { buildScenePrompt, generateScene } from '../services/ai';
 import TurnControl from '../components/TurnControl';
-import PoppinManager from '../components/managers/PoppinManager';
 
 function DashboardView() {
   const currentTurn = useWorldStore((state) => state.meta.currentTurn);
@@ -24,8 +24,7 @@ function DashboardView() {
 	return characters.ids.map(id => characters.entities[id]).filter(char => char.currentLocationID === null);  
 	}, [characters]);
   
-  const [openPoppin, setOpenPoppin] = useState(null);
-  const [poppinData, setPoppinData] = useState(null);
+  const openModal = useModalStore((state) => state.openModal);
   
   const moveCharacter = useWorldStore((state) => state.moveCharacter);
   const deleteCharacter = useWorldStore((state) => state.deleteCharacter);
@@ -63,56 +62,28 @@ function DashboardView() {
 	  deleteLocation(location.id);
 	}
   };
-
-  const openCharEditor = (characterb) => {
-	setOpenPoppin('character_form');
-	setPoppinData(characterb);
-  }; 
-  const openLocEditor = (locationb) => {
-	setOpenPoppin('location_form');
-	setPoppinData(locationb);
-	
-  };
-  const addScene = (locationId) => {
-	setOpenPoppin('scene_form');
-	setPoppinData(locationId);
-  };
-  const openWriterSettings = () => {
-	setOpenPoppin('writer_settings_form');
-	setPoppinData('');
-  };
-  const openTurnSettings = () => {
-	setOpenPoppin('turn_settings_form');
-	setPoppinData('');
-  };
-  const closePoppin = () => {
-	setOpenPoppin(null);
-	setPoppinData(null);
-  };
   
   return (
 	<DndContext onDragEnd={handleDragEnd}>
     <div>
-	  <button onClick={() => openWriterSettings()}>AI Settings</button>
-	  <TurnControl openTurnSettings={openTurnSettings}/>
+	  <button onClick={() => openModal('writer_settings_form')}>AI Settings</button>
+	  <TurnControl openTurnSettings={() => openModal('turn_settings_form')}/>
       <section>
         <h2>Locations</h2>
-		<button onClick={() => openLocEditor(null)}>+ Create New Location</button>
+		<button onClick={() => openModal('location_form', null)}>+ Create New Location</button>
         <div className={styles.dispContainer}>
           {locations.map((loc) => (
-            <LocationCard key={loc.id} location={loc} onEditClick={openLocEditor} onDeleteClick={handleDeleteLocation} onSceneClick={addScene}/>
+            <LocationCard key={loc.id} location={loc} onEditClick={() => openModal('location_form', loc)} onDeleteClick={handleDeleteLocation} onSceneClick={() => openModal('scene_form', loc.id)}/>
           ))}
         </div>
       </section>
 	  <section>
         <h2>Characters</h2>
-		<button onClick={() => openCharEditor(null)}>+ Create New Character</button>
+		<button onClick={() => openModal('character_form', null)}>+ Create New Character</button>
         <div className="UnplacedDisplay">
-          <UnplacedContainer characters={unplachars} onEditClick={openCharEditor} onDeleteClick={handleDeleteCharacter}/>
+          <UnplacedContainer characters={unplachars} onEditClick={(character) => openModal('character_form', character)} onDeleteClick={handleDeleteCharacter}/>
         </div>
       </section>
-	  
-	  <PoppinManager poppinType={openPoppin} data={poppinData} onClose={closePoppin}/>
 	</div>
 	</DndContext>
   );
