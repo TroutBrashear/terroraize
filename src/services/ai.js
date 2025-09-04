@@ -5,6 +5,11 @@ export function buildScenePrompt(promptData) {
 	
 	const location = worldStore.getLocationById(promptData.locationId);
 	
+	if(!location) {
+		console.error(`Prompted Scene location ${promptData.locationId} not found`);
+		throw new Error("Cannot generate scene: Location not found.");
+	}
+	
 	const characters = promptData.characterIds.map(charid => worldStore.getCharacterById(charid));
 	
 	let prompt = "\n";
@@ -14,7 +19,7 @@ export function buildScenePrompt(promptData) {
 	
 	if (characters.length > 0){
 		prompt += "Characters in Scene: \n";
-		characters.forEach(curChar => {
+		characters.filter(Boolean).forEach(curChar => { 
 			prompt += `-- ${curChar.name}: ${curChar.narrative.description}\n`;
 			
 			if (curChar.narrative.goals.length > 0) {
@@ -26,7 +31,9 @@ export function buildScenePrompt(promptData) {
 				const recentScenes = curChar.narrative.sceneHistory.slice(-promptData.memoryDepth);
 				recentScenes.forEach(scene => {
 					const indScene = worldStore.getSceneById(scene);
-					prompt += `${indScene.narrative.narrationText}\n`;
+					if(indScene) {
+						prompt += `${indScene.narrative.narrationText}\n`;
+					}
 				});
 			}
 		});
