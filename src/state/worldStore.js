@@ -98,7 +98,7 @@ export const useWorldStore = create(
 	addScene: (newSceneData) => {
 		const state = get();
 		const newId = state.meta.lastSceneId + 1;
-		const charactersPresent = newSceneData.narrative.charactersPresent || [];
+		const presentCharacters = newSceneData.narrative.presentCharacters || [];
 		const newScene = {
 			id: newId,
 			turn: state.meta.currentTurn,
@@ -106,7 +106,7 @@ export const useWorldStore = create(
 			locationId: newSceneData.locationId,
 			narrative: {
 				narrationText: newSceneData.narrative.narrationText || '',
-				charactersPresent: charactersPresent,
+				presentCharacters: presentCharacters,
 			}
 		};
 		set({

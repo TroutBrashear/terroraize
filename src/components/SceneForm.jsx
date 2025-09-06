@@ -49,7 +49,7 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 			resolved: resolved,
 			narrative: {
 				narrationText: nText,
-				charactersPresent: presentCharacters
+				presentCharacters: presentCharacters
 			}
 		};
 		
