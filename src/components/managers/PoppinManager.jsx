@@ -32,7 +32,7 @@ function PoppinManager() {
 		case 'scene_form': //a new scene, for now, I guess.
 			return(
 				<Poppin isOpen={true} onClose={closeModal}>
-					<SceneForm scene={null} locationId={modalData} onSaveComplete={closeModal}/>
+					<SceneForm scene={modalData.scene} locationId={modalData.locationId} onSaveComplete={closeModal}/>
 				</Poppin>
 			);
 		case 'writer_settings_form':

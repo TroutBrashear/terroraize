@@ -24,7 +24,7 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 	const [error, setError] = useState(null);
 	
 	useEffect(() => {
-	  console.log(scene);
+	  
 	  if(scene) {
 		setNText(scene.narrative.narrationText || '');
 		setSLocation(scene.locationId || '');
@@ -37,6 +37,8 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 		const charIds = charsHere.map(char => char.id);
 		setPresentCharacters(charIds);
 	  }
+	  
+	  console.log(presentCharacters);
 	}, [scene, characters, locationId]);
 	
 	const handleSubmit = (event) => {

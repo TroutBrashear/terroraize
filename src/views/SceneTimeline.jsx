@@ -62,7 +62,7 @@ function SceneTimeline() {
 						<h4 className={styles.turnMarker}>Turn {turnNumber}</h4>
 						<div className={styles.scenesContainer}>
 							{scenesByTurn[turnNumber].map(scene => (
-								<button key={scene.id} className={`${styles.scenePip} ${scene.resolved ? styles.resolved : ''}`} onClick={() => openModal('scene_form', scene)}>
+								<button key={scene.id} className={`${styles.scenePip} ${scene.resolved ? styles.resolved : ''}`} onClick={() => openModal('scene_form', {scene: scene, locationId: scene.locationId })}>
 									{scene.id}
 								</button>
 							))}

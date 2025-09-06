@@ -28,7 +28,7 @@ function LocationPanel() {
 			<button onClick={() => openModal('location_form', null)}>+ Create New Location</button>
 			<div className={styles.dispContainer}>
 				{locations.map((loc) => (
-					<LocationCard key={loc.id} location={loc} onEditClick={() => openModal('location_form', loc)} onDeleteClick={handleDeleteLocation} onSceneClick={() => openModal('scene_form', loc.id)}/>
+					<LocationCard key={loc.id} location={loc} onEditClick={() => openModal('location_form', loc)} onDeleteClick={handleDeleteLocation} onSceneClick={() => openModal('scene_form', {scene: null, locationId: loc.id})}/>
 				))}
 			</div>
 		</div>
