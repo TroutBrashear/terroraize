@@ -4,13 +4,18 @@ import { useModalStore } from '../state/modalStore';
 import Poppin from '../components/Poppin';
 import SceneForm from '../components/SceneForm';
 import styles from './SceneTimeline.module.css';
+import { downloadStory } from '../services/export';
 
 function SceneTimeline() { 
 	const allScenes = useWorldStore((state) => state.scenes);
 	const scenes = useMemo(() => {
-		return allScenes.ids.map(id => allScenes.entities[id]);
+		return allScenes.ids.map(id => allScenes.entities[id]).sort((a,b) => { 
+			if (a.turn !== b.turn) {
+				return a.turn - b.turn;
+			}
+			return a.id - b.id;
+		});
 	}, [allScenes]);
-	const [selectedScene, setSelectedScene] = useState(null);
 	
 	const groupByTurn = (scenes) => {
 		return scenes.reduce((groupedScenes, scene) => {
@@ -24,26 +29,50 @@ function SceneTimeline() {
 		}, {});
 	};
 	
+	const exportStory = () => {
+		let formattedStory = '';
+		let currentTurn = -1;
+		
+		scenes.forEach(scene => {
+			if(scene.turn !== currentTurn) {
+				if(currentTurn !== -1) {
+					formattedStory += '\n';
+				}
+				
+				formattedStory += `--- TURN ${scene.turn} ---\n\n`;
+				currentTurn = scene.turn;
+			}
+			
+			formattedStory += `${scene.narrative.narrationText} \n\n`;
+		});
+		
+		downloadStory('MyStory.txt', formattedStory);
+	};
+	
 	const scenesByTurn = useMemo(() => groupByTurn(scenes), [scenes]);
 	
 	const openModal = useModalStore((state) => state.openModal);
 	
 	return (
-		<div className={styles.timelineContainer}>
-			{Object.keys(scenesByTurn).map(turnNumber => (
-				<div key={turnNumber} className={styles.turnSection}>
-					<h4 className={styles.turnMarker}>Turn {turnNumber}</h4>
-					<div className={styles.scenesContainer}>
-						{scenesByTurn[turnNumber].map(scene => (
-							<button key={scene.id} className={`${styles.scenePip} ${scene.resolved ? styles.resolved : ''}`} onClick={() => openModal('scene_form', scene)}>
-								{scene.id}
-							</button>
-						))}
+		<div>
+			<button type="button" onClick={exportStory} >Export Story</button>
+			<div className={styles.timelineContainer}>
+				{Object.keys(scenesByTurn).map(turnNumber => (
+					<div key={turnNumber} className={styles.turnSection}>
+						<h4 className={styles.turnMarker}>Turn {turnNumber}</h4>
+						<div className={styles.scenesContainer}>
+							{scenesByTurn[turnNumber].map(scene => (
+								<button key={scene.id} className={`${styles.scenePip} ${scene.resolved ? styles.resolved : ''}`} onClick={() => openModal('scene_form', scene)}>
+									{scene.id}
+								</button>
+							))}
+						</div>
 					</div>
-				</div>
-			))}
+				))}
+			</div>
 		</div>
 	);
+	
 }
 
 
