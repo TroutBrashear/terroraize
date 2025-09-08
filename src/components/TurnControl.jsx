@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useWorldStore } from '../state/worldStore';
 import { useSettingStore } from '../state/settingStore';
+import { useModalStore } from '../state/modalStore';
 import { buildScenePrompt, generateScene } from '../services/ai';
 
 function TurnControl({openTurnSettings}) {
   const worldState = useWorldStore.getState();
   const currentTurn = useWorldStore((state) => state.meta.currentTurn);
+  const openModal = useModalStore((state) => state.openModal);
   const advTurn = useWorldStore((state) => state.advTurn);
   const getUnresolvedScenes = useWorldStore((state) => state.getUnresolvedScenes);
   const manageSceneResolution = useWorldStore((state) => state.manageSceneResolution);
@@ -33,7 +35,7 @@ function TurnControl({openTurnSettings}) {
 		
 			updateAtmoSettings(newAtmoSettings);
 		}
-		
+		openModal('turn_debrief_modal')
 		setTurnResolution(false);
 		return;
 	}
@@ -43,7 +45,7 @@ function TurnControl({openTurnSettings}) {
 		
 		const prompt = text + atmosphere + buildScenePrompt(promptData);
 		
-		const output = await generateScene(prompt, key, modelName);
+		const output = await generateScene(prompt, modelName);
 		
 		updateScene(scen.id, { narrative: { narrationText: output }, resolved: true });
 		manageSceneResolution(scen);
@@ -57,6 +59,7 @@ function TurnControl({openTurnSettings}) {
 		updateAtmoSettings(newAtmoSettings);
 	}
 	advTurn();
+	setTurnResolution(false);
 	setTurnResolution(false);
   };
 	

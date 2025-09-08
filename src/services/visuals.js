@@ -1,6 +1,6 @@
 
 
-export function textcolor(provColor) {
+export function textColor(provColor) {
 	let r = parseInt(provColor.slice(1,3), 16);
 	let g = parseInt(provColor.slice(3,5), 16);
 	let b = parseInt(provColor.slice(5,7), 16);

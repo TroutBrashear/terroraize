@@ -6,6 +6,7 @@ import LocationForm from '../LocationForm';
 import SceneForm from '../SceneForm';
 import WriterSettingsForm from '../WriterSettingsForm';
 import AtmosphereForm from '../AtmosphereForm';
+import TurnDebriefModal from '../modals/TurnDebriefModal';
 
 function PoppinManager() {
 	
@@ -45,6 +46,12 @@ function PoppinManager() {
 			return(
 				<Poppin isOpen={true} onClose={closeModal}>
 					<AtmosphereForm onSaveComplete={closeModal}/>
+				</Poppin>
+			);
+		case 'turn_debrief_modal':
+			return(
+				<Poppin isOpen={true} onClose={closeModal}>
+					<TurnDebriefModal onSaveComplete={closeModal}/>
 				</Poppin>
 			);
 		default:
