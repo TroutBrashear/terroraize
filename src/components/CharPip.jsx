@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import styles from './Pip.module.css';
+import {textColor} from '../services/visuals.js';
 
 function CharPip({ character }) {
 	if (!character) {
@@ -22,11 +23,14 @@ function CharPip({ character }) {
 		: {
 		backgroundColor: color,
 	};
-
+	
+	const initialStyle = {
+		color: textColor(color),
+	};
   
   return (
     <div ref={setNodeRef} className={styles.pip} style={style} title={character.name} {...listeners} {...attributes}>
-      <p className={styles.initial}>{initial}</p>
+      <p className={styles.initial} style={initialStyle}>{initial}</p>
     </div>
   );
 }
