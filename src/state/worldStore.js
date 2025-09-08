@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware'; 
+import { useSettingStore } from './settingStore';
+import { generateScene, buildScenePrompt } from '../services/ai';
 
 // This is the main function from Zustand. We wrap it in `persist` middleware.
 export const useWorldStore = create(
@@ -351,7 +353,56 @@ export const useWorldStore = create(
 		  meta: {
 			...state.meta, currentTurn: state.meta.currentTurn +1,
 		  }
-	  }))
+	  })),
+	  
+	  resolveTurn: async () => {
+		const { 
+			getUnresolvedScenes, 
+			updateScene, 
+			manageSceneResolution, 
+			advTurn, 
+			meta 
+		} = get();
+		
+		
+		const { writerSettings } = useSettingStore.getState();
+	    const { text, memoryDepth } = writerSettings.prompt;
+		const { modelName } = writerSettings.api;
+		
+		const unresScenes = getUnresolvedScenes(meta.currentTurn);
+		
+		if(unresScenes.length === 0) {
+			if(writerSettings.atmosphere.resetEachTurn) {
+				const newAtmoSettings = {
+					text: '',
+					resetEachTurn: true,	
+				};
+		
+				useSettingStore.getState().setAtmoSettings(newAtmoSettings);
+			}
+			
+			return;
+		}
+	  
+		for(const scen of unresScenes) {
+			const promptData = {locationId: scen.locationId, characterIds: scen.narrative.charactersPresent, memoryDepth: memoryDepth };
+		
+			const prompt = text + writerSettings.atmosphere.text + buildScenePrompt(promptData);
+		
+			const output = await generateScene(prompt, modelName);
+		
+			updateScene(scen.id, { narrative: { narrationText: output }, resolved: true });
+			manageSceneResolution(scen);
+		}
+		if(writerSettings.atmosphere.resetEachTurn) {
+			const newAtmoSettings = {
+				text: '',
+				resetEachTurn: true,	
+			};
+		
+			useSettingStore.getState().setAtmoSettings(newAtmoSettings);
+		}
+	  }
     }),
     {
       name: 'terroraize', 

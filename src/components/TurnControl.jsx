@@ -9,59 +9,16 @@ function TurnControl({openTurnSettings}) {
   const currentTurn = useWorldStore((state) => state.meta.currentTurn);
   const openModal = useModalStore((state) => state.openModal);
   const advTurn = useWorldStore((state) => state.advTurn);
-  const getUnresolvedScenes = useWorldStore((state) => state.getUnresolvedScenes);
-  const manageSceneResolution = useWorldStore((state) => state.manageSceneResolution);
-  const updateScene = useWorldStore((state) => state.updateScene);
+  const resolveTurn = useWorldStore((state) => state.resolveTurn);
   const [turnResolution, setTurnResolution] = useState(false); //is a turn actively being resolved? If so, some functionality is disabled to wait for AI services
-  const { key, modelName } = useSettingStore((state) => state.writerSettings.api);
-  const { text, memoryDepth }= useSettingStore((state) => state.writerSettings.prompt);
-  
-  const atmosphere = useSettingStore((state) => state.writerSettings.atmosphere.text);
-  const resetAtmo = useSettingStore((state) => state.writerSettings.atmosphere.resetEachTurn);
-  const updateAtmoSettings = useSettingStore((state) => state.setAtmoSettings);
   
 	const resTurn =  async () => {
-	setTurnResolution(true);
-	  
-	const unresScenes = getUnresolvedScenes(currentTurn);
-	  
-	if(unresScenes.length === 0) {
+		setTurnResolution(true);
+		await resolveTurn();
+		openModal('turn_debrief_modal');
 		advTurn();
-		if(resetAtmo) {
-			const newAtmoSettings = {
-				text: '',
-				resetEachTurn: true,	
-			};
-		
-			updateAtmoSettings(newAtmoSettings);
-		}
-		openModal('turn_debrief_modal')
 		setTurnResolution(false);
-		return;
-	}
-	  
-	for(const scen of unresScenes) {
-		const promptData = {locationId: scen.locationId, characterIds: scen.narrative.charactersPresent, memoryDepth: memoryDepth };
-		
-		const prompt = text + atmosphere + buildScenePrompt(promptData);
-		
-		const output = await generateScene(prompt, modelName);
-		
-		updateScene(scen.id, { narrative: { narrationText: output }, resolved: true });
-		manageSceneResolution(scen);
-	}
-	if(resetAtmo) {
-		const newAtmoSettings = {
-			text: '',
-			resetEachTurn: true,	
-		};
-		
-		updateAtmoSettings(newAtmoSettings);
-	}
-	advTurn();
-	setTurnResolution(false);
-	setTurnResolution(false);
-  };
+	};
 	
 	
   return (
