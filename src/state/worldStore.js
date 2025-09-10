@@ -346,7 +346,7 @@ export const useWorldStore = create(
 	  
 	  getUnresolvedScenes: (turnId) => {
 		  const allScenes = get().getAllScenesAsArray();
-		  return allScenes.filter(scene => scene.turn === turnId && scene.resolved === false)
+		  return allScenes.filter(scene => scene.turn === turnId && scene.resolved === false);
 	  },
 	  
 	  advTurn: () => set((state) => ({
