@@ -67,6 +67,12 @@ export const useWorldStore = create(
 		ids: [1]
 	  },
 
+	  turnResAssist: {
+	  	directions: [],
+	  	error: null,
+	  	isLoading: false
+	  },
+
     //FUNCTIONS
       addCharacter: (newCharacterData) => set((state) => {
         const newId = state.meta.lastCharacterId + 1;
@@ -402,7 +408,35 @@ export const useWorldStore = create(
 		
 			useSettingStore.getState().setAtmoSettings(newAtmoSettings);
 		}
-	  }
+	  },
+	  fetchDirectionsStart: () => set((state) => ({
+  		turnStaging: {
+   	    ...state.turnStaging,
+      	isLoading: true,
+        error: null, // If a previous turn debrief generated an error, we clear it here.
+   	 },
+		})),
+		fetchDirectionsSuccess: (directions) => set((state) => ({ //called when the AI director provides valid formed directions in the debrief stage
+ 		  turnStaging: {
+        ...state.turnStaging,
+        isLoading: false,
+        directions: directions,
+      },
+    })),
+    fetchDirectionsFailure: (errorMessage) => set((state) => ({
+  		turnStaging: {
+    		...state.turnStaging,
+    		isLoading: false,
+    		error: errorMessage,
+  		},
+		})),
+		clearStagedDirectives: () => set({
+  		turnResAssist: {
+    		directives: [],
+    		isLoading: false,
+    		error: null,
+  		},
+		}),
     }),
     {
       name: 'terroraize', 
