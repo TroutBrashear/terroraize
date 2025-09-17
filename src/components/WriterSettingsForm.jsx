@@ -55,7 +55,7 @@ function WriterSettingsForm({onSaveComplete}) {
 			<h2> Writer Settings </h2>
 			
 			<label className={styles.label} htmlFor="apiKey">API Key </label>
-			<input id="apiKey" className={styles.input} placeholder={isKeySet ? '••••••••••••••••' : 'Enter API Key'} value={key} onChange={(e) => setKey(e.target.value)} />
+			<input id="apiKey" className={styles.input} placeholder={isKeySet ? '••••••••••••••••' : 'Enter API Key'} value={key} onChange={(e) => setKey(e.target.value)} autoComplete="new-password"/>
 			<label className={styles.label} htmlFor="modelName">AI Model </label>
 			<input id="modelName" className={styles.input}  value={model} onChange={(e) => setModel(e.target.value)} />
 			<label className={styles.label} htmlFor="sysPrompt">System Prompt </label>
