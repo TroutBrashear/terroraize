@@ -430,9 +430,9 @@ export const useWorldStore = create(
     		error: errorMessage,
   		},
 		})),
-		clearStagedDirectives: () => set({
+		clearStagedDirections: () => set({
   		turnResAssist: {
-    		directives: [],
+    		directions: [],
     		isLoading: false,
     		error: null,
   		},
