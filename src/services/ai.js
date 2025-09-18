@@ -119,7 +119,7 @@ export function buildDirectionPrompt() {
 
 	Based on the World State and the Events of the Last Turn, for EACH character listed, determine their most logical next location and a brief, compelling "intent" for going there.
 
-	Your response MUST be a single, valid JSON array of objects. Do not include any text or explanation outside of the JSON array.
+	Your response MUST be a single, valid JSON array of objects. Do not include any text or explanation outside of the JSON array. YOU MAY NOT INCLUDE ANY ADDITIONAL TEXT, TO INCLUDE ACKNOWLEDGING THE TEXT OR PLANNING.
 
 	Each object in the array must have the following exact structure:
 	{
@@ -128,7 +128,7 @@ export function buildDirectionPrompt() {
 	"intent": "<string>"
 	}
 
-	Example of a valid response:
+	Example of a valid response (DO NOT include anything outside the square brackets. Do not put it in quotes, preface it with JSON, etc.):
 	[
 	{"characterId": 1, "nextLocationId": 1, "intent": "Explore the hidden passage for the amulet."}
 	]
@@ -141,6 +141,7 @@ export async function generateDirection(modelName){
 	const prompt = buildDirectionPrompt();
 	
 	try {
+		console.log('Direction request sent.');
 		const response = await fetch('/api/generate', {
 			method: 'POST',
 			headers: {
@@ -163,7 +164,7 @@ export async function generateDirection(modelName){
 				const directions = JSON.parse(responseString);
 				return directions;
 			} catch(parseError) {
-				console.error("Failed to parse AI response (directions) as JSON:", responseText);
+				console.error("Failed to parse AI response (directions) as JSON:", responseString);
 				throw new Error("The AI director provided a malformed response.");
 			}
 		} 

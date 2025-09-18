@@ -410,21 +410,21 @@ export const useWorldStore = create(
 		}
 	  },
 	  fetchDirectionsStart: () => set((state) => ({
-  		turnStaging: {
+  		turnResAssist: {
    	    ...state.turnStaging,
       	isLoading: true,
         error: null, // If a previous turn debrief generated an error, we clear it here.
    	 },
 		})),
 		fetchDirectionsSuccess: (directions) => set((state) => ({ //called when the AI director provides valid formed directions in the debrief stage
- 		  turnStaging: {
+ 		  turnResAssist: {
         ...state.turnStaging,
         isLoading: false,
         directions: directions,
       },
     })),
     fetchDirectionsFailure: (errorMessage) => set((state) => ({
-  		turnStaging: {
+  		turnResAssist: {
     		...state.turnStaging,
     		isLoading: false,
     		error: errorMessage,

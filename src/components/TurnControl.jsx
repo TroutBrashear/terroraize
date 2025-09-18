@@ -16,7 +16,7 @@ function TurnControl({openTurnSettings}) {
 		setTurnResolution(true);
 		await resolveTurn();
 		openModal('turn_debrief_modal');
-		advTurn();
+		//advTurn(); //removed, this occurs in TurnDebrief now.
 		setTurnResolution(false);
 	};
 	

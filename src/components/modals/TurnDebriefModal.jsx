@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from '../Form.module.css';
 import { useWorldStore } from '../../state/worldStore';
 import { useSettingStore } from '../../state/settingStore';
@@ -13,7 +13,15 @@ function TurnDebriefModal({ turnNumber, onSaveComplete }) {
       fetchDirectionsFailure,
       clearStagedDirections,
       advTurn,
+      moveCharacter,
     } = useWorldStore.getState();
+
+    const [finalDirections, setFinalDirections] = useState([]); 
+
+
+    useEffect(() => {
+    	setFinalDirections(directions);
+    }, [directions]);
 
 	const handleAIDirection = async () => {
 		fetchDirectionsStart();
@@ -25,9 +33,16 @@ function TurnDebriefModal({ turnNumber, onSaveComplete }) {
 		}
 	};
 
+	const handleDeleteDirection = (id) => {
+		setFinalDirections(currentDirections => currentDirections.filter(direction => direction.characterId !== id));
+
+	};
+
 	const handleSubmit = (event) => {
 		event.preventDefault();
-
+		finalDirections.forEach((direction) => {
+		  moveCharacter(direction.characterId, direction.nextLocationId);
+		});
 		advTurn();
 		clearStagedDirections();
 		onSaveComplete();
@@ -42,8 +57,11 @@ function TurnDebriefModal({ turnNumber, onSaveComplete }) {
 
 			<h3>AI Directions:</h3>
 			<div>
-			{directions.map(dir=> (
-				<p>Character {dir.characterId}: Move to {dir.nextLocationId} to accomplish: {dir.intent}</p>
+			{finalDirections.map(dir=> (
+				<div className={styles.formRow}>
+					<p key={dir.characterId}>Character {dir.characterId}: Move to {dir.nextLocationId} to accomplish: {dir.intent}</p>
+					<button type="button" onClick={() => handleDeleteDirection(dir.characterId)}>X</button>
+				</div>
 			))}
 			</div>
 			 <button className={styles.submitButton} type="submit">Confirm</button>
