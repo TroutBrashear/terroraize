@@ -165,7 +165,7 @@ export async function generateDirection(modelName){
 				return directions;
 			} catch(parseError) {
 				console.error("Failed to parse AI response (directions) as JSON:", responseString);
-				throw new Error("The AI director provided a malformed response.");
+				throw new Error("DIRECTOR_RESPONSE_PARSE_ERROR");
 			}
 		} 
 		else {

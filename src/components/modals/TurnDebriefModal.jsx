@@ -29,7 +29,13 @@ function TurnDebriefModal({ turnNumber, onSaveComplete }) {
 			const result = await generateDirection(modelName);
 			fetchDirectionsSuccess(result);
 		} catch (err) {
-			fetchDirectionsFailure(err.message);
+			if(err.message === "DIRECTOR_RESPONSE_PARSE_ERROR"){
+				fetchDirectionsFailure("The AI response was not in the expected format. This is likely to happen with smaller models; please try again, or use a recommended model as Director.");
+			}
+			else{
+				fetchDirectionsFailure(err.message);
+			}
+			
 		}
 	};
 
