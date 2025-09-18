@@ -75,6 +75,46 @@ export async function generateScene(prompt, modelName){
 	}
 }
 
+export function sanitizeAIJSON(responseText) {
+	if(!responseText){
+		return null;
+	}
+
+	const firstBrace = responseText.indexOf('{');
+	const firstBracket = responseText.indexOf('[');
+
+	let startIndex;
+	if(firstBrace === -1)
+	{
+		startIndex = firstBracket;
+	}
+	else if(firstBracket === -1)
+	{
+		startIndex = firstBrace;
+	}
+	else
+	{
+		startIndex = Math.min(firstBrace, firstBracket);
+	}
+
+	if(startIndex === -1) //no first bracket/brace found, no JSON here.
+	{
+		return null;
+	}
+
+	const lastBrace = responseText.lastIndexOf('}');
+	const lastBracket = responseText.lastIndexOf(']');
+	const endIndex = Math.max(lastBrace, lastBracket);
+
+	if(endIndex === -1) //no last bracket/brace found, either JSON not present or malformed.
+	{
+		return null;
+	}
+
+	let sanitizedText = responseText.substring(startIndex, endIndex + 1);
+
+	return sanitizedText;
+}
 
 export function buildDirectionPrompt() {
 	const worldStore = useWorldStore.getState();
@@ -158,7 +198,7 @@ export async function generateDirection(modelName){
 		const data = await response.json();
 
 		if (data.choices && data.choices[0]) {
-			const responseString = data.choices[0].text;
+			const responseString = sanitizeAIJSON(data.choices[0].text);
 			
 			try {
 				const directions = JSON.parse(responseString);
