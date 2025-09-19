@@ -257,7 +257,7 @@ export const useWorldStore = create(
 		state.characters.ids.forEach(charId => {
 			const character = updatedCharacters[charId];
 			
-			if(character.currentLocationId === locationId) {
+			if(character.currentLocationID === locationId) {
 				updatedCharacters[charId] = { ...character, currentLocationID: null };
 			}
 		});
