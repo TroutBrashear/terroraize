@@ -46,6 +46,7 @@ function TurnDebriefModal({ turnNumber, onSaveComplete }) {
 
 	const handleClearDirections = () => {
 		setFinalDirections([]);
+		clearStagedDirections();
 	};
 
 	const handleSubmit = (event) => {
@@ -66,7 +67,7 @@ function TurnDebriefModal({ turnNumber, onSaveComplete }) {
 			{error && <p className={styles.errorText}>Error: {error}</p>}
 
 			<h3>AI Directions:</h3>
-			<button type="button" onClick={handleClearDirections}>Clear Directions</button>
+			{finalDirections.length > 0 && <button type="button" onClick={handleClearDirections}>Clear Directions</button>}
 			<div>
 			{finalDirections.map(dir=> (
 				<div className={styles.formRow}>

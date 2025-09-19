@@ -14,7 +14,8 @@ function LocationPanel() {
 	}, [allLocations]);
 	
 	const deleteLocation = useWorldStore((state) => state.deleteLocation);
- 
+ 	
+ 	const locationCount = allLocations.ids.length;
 	
 	const handleDeleteLocation = (location) => {
 		if(window.confirm("Confirm Deletion of Location.")){
@@ -24,7 +25,7 @@ function LocationPanel() {
 	
 	return (
 		<div>
-			<h2>Locations</h2>
+			<h2 title={`${locationCount} locations exist.`}>Locations</h2>
 			<button onClick={() => openModal('location_form', null)}>+ Create New Location</button>
 			<div className={styles.dispContainer}>
 				{locations.map((loc) => (

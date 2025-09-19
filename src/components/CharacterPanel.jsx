@@ -14,6 +14,8 @@ function CharacterPanel() {
 	}, [characters]);
 	
 	const deleteCharacter = useWorldStore((state) => state.deleteCharacter);
+
+	const characterCount = characters.ids.length;
 	
 	const handleDeleteCharacter = (character) => {
 		if(window.confirm("Confirm Deletion of Character.")){
@@ -23,7 +25,7 @@ function CharacterPanel() {
 	
 	return (
 		<div>
-			<h2>Characters</h2>
+			<h2 title={`${characterCount} characters exist.`}>Characters</h2>
 			<button onClick={() => openModal('character_form', null)}>+ Create New Character</button>
 			<div className="UnplacedDisplay">
 				<UnplacedContainer characters={unplachars} onEditClick={(character) => openModal('character_form', character)} onDeleteClick={handleDeleteCharacter}/>
