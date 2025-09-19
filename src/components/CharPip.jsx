@@ -3,13 +3,14 @@ import { useDraggable } from '@dnd-kit/core';
 import styles from './Pip.module.css';
 import {textColor} from '../services/visuals.js';
 
-function CharPip({ character }) {
+function CharPip({ character, isReadOnly }) {
 	if (!character) {
 		return null;
 	}
 	
 	const { attributes, listeners, setNodeRef, transform } = useDraggable({
 		id: character.id, // The unique ID for this draggable item
+		disabled: isReadOnly,
 	});
 	
 	  const initial = character.name ? character.name[0].toUpperCase(): '?';
@@ -29,7 +30,7 @@ function CharPip({ character }) {
 	};
   
   return (
-    <div ref={setNodeRef} className={styles.pip} style={style} title={character.name} {...listeners} {...attributes}>
+    <div ref={setNodeRef} className={styles.pip} style={style} title={character.name} {...(!isReadOnly ? listeners: null)} {...(!isReadOnly ? attributes : null)}>
       <p className={styles.initial} style={initialStyle}>{initial}</p>
     </div>
   );

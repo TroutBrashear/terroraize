@@ -5,13 +5,14 @@ import styles from './LocationCard.module.css';
 import { useWorldStore } from '../state/worldStore';
 import CharPip from './CharPip';
 
-function LocationCard({ location, onEditClick, onDeleteClick, onSceneClick }) {
+function LocationCard({ location, onEditClick, onDeleteClick, onSceneClick, isReadOnly = false }) {
   if (!location) {
     return null;
   }
   
   const { isOver, setNodeRef } = useDroppable({
     id: location.id, // The unique ID for this droppable area
+    disabled: isReadOnly,
   });
  
   const style = {
@@ -30,14 +31,14 @@ function LocationCard({ location, onEditClick, onDeleteClick, onSceneClick }) {
       <p className={styles.description}>{location.narrative.description}</p>
 	  <div className={styles.pipContainer}>
 		{charsHere.map((char) => (
-		<CharPip key={char.id} character={char}/>
+		<CharPip key={char.id} character={char} isReadOnly={isReadOnly}/>
 		))}
 	  </div>
-	  <DispDropdown>
-		<button className={styles.menuitem} onClick={() => onEditClick(location)}> Edit </button>
-		<button className={styles.menuitem} onClick={() => onDeleteClick(location)}> Delete </button>
-		<button className={styles.menuitem} onClick={() => onSceneClick(location.id)}> Create Scene </button>
-	  </DispDropdown>
+	  {!isReadOnly && (<DispDropdown>
+			<button className={styles.menuitem} onClick={() => onEditClick(location)}> Edit </button>
+			<button className={styles.menuitem} onClick={() => onDeleteClick(location)}> Delete </button>
+			<button className={styles.menuitem} onClick={() => onSceneClick(location.id)}> Create Scene </button>
+	  </DispDropdown>)}
 	</div>
   );
 }

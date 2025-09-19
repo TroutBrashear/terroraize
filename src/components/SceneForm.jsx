@@ -3,10 +3,12 @@ import { useWorldStore } from '../state/worldStore';
 import { useSettingStore } from '../state/settingStore';
 import styles from './Form.module.css';
 import { buildScenePrompt, generateScene } from '../services/ai';
+import LocationCard from './LocationCard';
 
 function SceneForm({ scene, locationId, onSaveComplete }) {
 	const addScene = useWorldStore((state) => state.addScene);
 	const updateScene = useWorldStore((state) => state.updateScene);
+	const getLocationById = useWorldStore((state) => state.getLocationById);
 	const manageSceneResolution = useWorldStore((state) => state.manageSceneResolution);
 	
 	const { modelName } = useSettingStore((state) => state.writerSettings.api);
@@ -20,7 +22,9 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 	
 	const characters = useWorldStore((state) => state.characters);
 	const [presentCharacters, setPresentCharacters] = useState([]);
-	
+	const [location, setLocation] = useState(null);
+
+
 	const [error, setError] = useState(null);
 	
 	useEffect(() => {
@@ -28,11 +32,16 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 	  if(scene) {
 		setNText(scene.narrative.narrationText || '');
 		setSLocation(scene.locationId || '');
+		if(scene.locationId)
+		{
+			setLocation(getLocationById(scene.locationId));
+		}
 		setResolved(scene.resolved || false);
 		setPresentCharacters(scene.narrative.presentCharacters || []);
 	  }
 	  else {
 		setSLocation(locationId);
+		setLocation(getLocationById(locationId));
 		const charsHere = characters.ids.map(id => characters.entities[id]).filter(char => char.currentLocationID === locationId);
 		const charIds = charsHere.map(char => char.id);
 		setPresentCharacters(charIds);
@@ -91,7 +100,7 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 	
 	return (
 		<form className={styles.form} onSubmit={handleSubmit}>
-		
+			{location && <LocationCard key={location.id} location={location} onEditClick={null} onDeleteClick={null} onSceneClick={null} isReadOnly={true}/>}
 			 {error && <div className={styles.errorText}>{error}</div>}
 			<div className = {styles.formGroup}>
 				<label className={styles.label} htmlFor="text">Scene Text </label>
