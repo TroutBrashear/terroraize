@@ -1,6 +1,6 @@
 
 .timelineContainer {
-  display: flex; /* This is the key! */
+  display: flex; 
   flex-direction: column; 
   overflow-y: auto;
   background-color: #1a1a1a;

@@ -32,6 +32,8 @@ function DashboardView() {
 		<div>
 			<button onClick={() => openModal('writer_settings_form')}>AI Settings</button>
 			<TurnControl openTurnSettings={() => openModal('turn_settings_form')}/>
+		</div>
+		<div className={styles.dispContainer}>
 			<LocationPanel />
 			<CharacterPanel />
 		</div>

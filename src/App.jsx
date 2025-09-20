@@ -24,14 +24,14 @@ function App() {
   
   return (
     <div className={styles.contentDisp}>
-	  <main className={styles.mainDash}>
-	    <DashboardView />
-	  </main>
-	  <footer>
-		<SceneTimeline />
-	  </footer>
+	  	<main className={styles.mainDash}>
+	  	  <DashboardView />
+	  	</main>
+	  	<footer>
+				<SceneTimeline />
+	  	</footer>
 	  
-	  <PoppinManager />
+	  	<PoppinManager />
     </div>
   );
 }

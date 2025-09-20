@@ -55,8 +55,8 @@ function SceneTimeline() {
 	
 	return (
 		<div>
-			<button type="button" onClick={exportStory} >Export Story</button>
 			<div className={styles.timelineContainer}>
+				<button type="button" onClick={exportStory} >Export Story</button>
 				{Object.keys(scenesByTurn).map(turnNumber => (
 					<div key={turnNumber} className={styles.turnSection}>
 						<h4 className={styles.turnMarker}>Turn {turnNumber}</h4>
