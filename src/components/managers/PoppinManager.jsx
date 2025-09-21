@@ -7,6 +7,7 @@ import SceneForm from '../SceneForm';
 import WriterSettingsForm from '../WriterSettingsForm';
 import AtmosphereForm from '../AtmosphereForm';
 import TurnDebriefModal from '../modals/TurnDebriefModal';
+import ConfirmModal from '../modals/ConfirmModal';
 
 function PoppinManager() {
 	
@@ -52,6 +53,12 @@ function PoppinManager() {
 			return(
 				<Poppin isOpen={true} onClose={closeModal}>
 					<TurnDebriefModal onSaveComplete={closeModal}/>
+				</Poppin>
+			);
+		case 'confirm_modal':
+			return(
+				<Poppin isOpen={true} onClose={closeModal}>
+					<ConfirmModal message={modalData.message} onConfirm={() => {modalData.onConfirm(); closeModal();}} onCancel={closeModal}/>
 				</Poppin>
 			);
 		default:

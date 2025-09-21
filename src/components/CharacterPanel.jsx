@@ -13,22 +13,16 @@ function CharacterPanel() {
 		return characters.ids.map(id => characters.entities[id]).filter(char => char.currentLocationID === null);  
 	}, [characters]);
 	
-	const deleteCharacter = useWorldStore((state) => state.deleteCharacter);
+	const deleteCharacter = useWorldStore.getState().deleteCharacter;
 
 	const characterCount = characters.ids.length;
-	
-	const handleDeleteCharacter = (character) => {
-		if(window.confirm("Confirm Deletion of Character.")){
-			deleteCharacter(character.id);
-		}
-	};
 	
 	return (
 		<div>
 			<h2 title={`${characterCount} characters exist.`}>Characters</h2>
 			<button onClick={() => openModal('character_form', null)}>+ Create New Character</button>
 			<div className="UnplacedDisplay">
-				<UnplacedContainer characters={unplachars} onEditClick={(character) => openModal('character_form', character)} onDeleteClick={handleDeleteCharacter}/>
+				<UnplacedContainer characters={unplachars} onEditClick={(character) => openModal('character_form', character)} onDeleteClick={(character) => openModal('confirm_modal', {message: `Are you sure you want to delete "${character.name}"?`, onConfirm: () => deleteCharacter(character.id)} )}/>
 			</div>
 		</div>
 	);

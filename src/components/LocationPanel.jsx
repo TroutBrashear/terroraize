@@ -13,15 +13,9 @@ function LocationPanel() {
 	  return allLocations.ids.map(id => allLocations.entities[id]);
 	}, [allLocations]);
 	
-	const deleteLocation = useWorldStore((state) => state.deleteLocation);
+	const deleteLocation = useWorldStore.getState().deleteLocation;
  	
  	const locationCount = allLocations.ids.length;
-	
-	const handleDeleteLocation = (location) => {
-		if(window.confirm("Confirm Deletion of Location.")){
-			deleteLocation(location.id);
-		}
-	};
 	
 	return (
 		<div>
@@ -29,7 +23,7 @@ function LocationPanel() {
 			<button onClick={() => openModal('location_form', null)}>+ Create New Location</button>
 			<div className={styles.dispContainer}>
 				{locations.map((loc) => (
-					<LocationCard key={loc.id} location={loc} onEditClick={() => openModal('location_form', loc)} onDeleteClick={handleDeleteLocation} onSceneClick={() => openModal('scene_form', {scene: null, locationId: loc.id})}/>
+					<LocationCard key={loc.id} location={loc} onEditClick={() => openModal('location_form', loc)} onDeleteClick={() => openModal('confirm_modal', {message: `Are you sure you want to delete "${loc.name}"?`, onConfirm: () => deleteLocation(loc.id)})} onSceneClick={() => openModal('scene_form', {scene: null, locationId: loc.id})}/>
 				))}
 			</div>
 		</div>
