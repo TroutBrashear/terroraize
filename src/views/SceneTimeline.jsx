@@ -8,6 +8,7 @@ import { downloadStory } from '../services/export';
 
 function SceneTimeline() { 
 	const allScenes = useWorldStore((state) => state.scenes);
+	const deleteScene = useWorldStore.getState().deleteScene;
 	const scenes = useMemo(() => {
 		return allScenes.ids.map(id => allScenes.entities[id]).sort((a,b) => { 
 			if (a.turn !== b.turn) {
@@ -62,9 +63,12 @@ function SceneTimeline() {
 						<h4 className={styles.turnMarker}>Turn {turnNumber}</h4>
 						<div className={styles.scenesContainer}>
 							{scenesByTurn[turnNumber].map(scene => (
-								<button key={scene.id} className={`${styles.scenePip} ${scene.resolved ? styles.resolved : ''}`} onClick={() => openModal('scene_form', {scene: scene, locationId: scene.locationId })}>
-									{scene.id}
-								</button>
+								<div key={scene.id} className={styles.sceneRow}>
+									<button className={`${styles.scenePip} ${scene.resolved ? styles.resolved : ''}`} onClick={() => openModal('scene_form', {scene: scene, locationId: scene.locationId })}>
+										{scene.id}
+									</button>
+									<button type="button" onClick={()=> openModal('confirm_modal', {message: `Are you sure you want to delete scene ${scene.id}?`, onConfirm: () => deleteScene(scene.id)})}>X</button>
+								</div>
 							))}
 						</div>
 					</div>

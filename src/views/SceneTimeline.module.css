@@ -64,3 +64,8 @@
 .resolved {
 	 border-color: #41a0ff;
 }
+
+.sceneRow {
+  display: flex;
+  flex-direction: row;
+}
