@@ -62,3 +62,67 @@ describe('worldStore character actions', () => {
 		expect(finalCharacter).toBeUndefined();
 	});
 });
+
+describe('worldStore location actions', () => {
+	beforeEach(() => { //Provide clean slate prior to every test case
+		useWorldStore.setState(initialState);
+	});
+
+	it('should correctly add a new location', () => {
+		const addLocation = useWorldStore.getState().addLocation;
+		const initialLocations = useWorldStore.getState().locations;
+		expect(initialLocations.ids.length).toBe(1);
+
+		const newLocationData = {
+			name: "Tacky Lobster Family Restaurant",
+			narrative: { description: "A B-tier family restaurant catering to seafood tastes."}
+		};
+
+		addLocation(newLocationData);
+
+		const finalLocations = useWorldStore.getState().locations;
+
+		expect(finalLocations.ids.length).toBe(2);
+		const newId = finalLocations.ids[1];
+		expect(newId).toBe(2);
+
+		const addedLocation = finalLocations.entities[newId];
+		expect(addedLocation).toBeDefined();
+		expect(addedLocation.name).toBe("Tacky Lobster Family Restaurant");
+		expect(addedLocation.narrative.description).toBe("A B-tier family restaurant catering to seafood tastes.");
+	});
+
+	it('should correctly update an existing location', () => {
+		const updateLocation = useWorldStore.getState().updateLocation;
+		const locationToUpdateId = 1;
+
+		const updateData = {
+			name: "Bigger Library"
+		};
+
+		updateLocation(locationToUpdateId, updateData);
+
+		const finalLocation = useWorldStore.getState().locations.entities[locationToUpdateId];
+		expect(finalLocation.name).toBe("Bigger Library");
+		expect(finalLocation.narrative.description).toBe("A towering, circular library filled with ancient, dust-covered tomes.");
+	});
+
+	it('should correctly delete an existing location and unplace characters that were at the deleted location', () => {
+		const { deleteLocation, editCharacter, moveCharacter } = useWorldStore.getState();
+		const locationToDeleteId = 1;
+		const characterToMoveId = 1;
+
+		moveCharacter(characterToMoveId, locationToDeleteId);
+		const interimCharacter = useWorldStore.getState().characters.entities[characterToMoveId];
+		expect(interimCharacter.currentLocationID).toBe(locationToDeleteId);
+
+		deleteLocation(locationToDeleteId);
+
+
+		const finalLocation = useWorldStore.getState().locations.entities[locationToDeleteId];
+		expect(finalLocation).toBeUndefined();
+
+		const finalCharacter = useWorldStore.getState().characters.entities[characterToMoveId];
+		expect(finalCharacter.currentLocationID).toBeNull();
+	});
+});
