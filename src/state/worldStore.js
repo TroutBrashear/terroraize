@@ -278,30 +278,43 @@ export const useWorldStore = create(
 	  }),
 	  
 	  deleteScene: (sceneId) => set((state) => {
-		const updatedScenes = {...state.scenes.entities};
+			const updatedScenes = {...state.scenes.entities};
+			const updatedCharacters = {...state.characters.entities};
+
+			delete updatedScenes[sceneId];
 		
-		delete updatedScenes[sceneId];
-		
-		const updatedIds = state.scenes.ids.filter(id => {
+			const updatedIds = state.scenes.ids.filter(id => {
 			  return id !== sceneId;
 		  });
 		  
-		return {
-			scenes: {
-				entities: updatedScenes,
-				ids: updatedIds,
-			}				
-		};
+			state.characters.ids.forEach(charId => {
+				const character = updatedCharacters[charId];
+			
+				const newSceneHistory = character.narrative.sceneHistory.filter(historyId => { return historyId !== sceneId});
+
+				const updatedCharacter = {...character, narrative: { ...character.narrative, sceneHistory: newSceneHistory }};
+
+				updatedCharacters[charId] = updatedCharacter;
+			});
+
+			return {
+				scenes: {
+					entities: updatedScenes,
+					ids: updatedIds,
+				},
+				characters: {  ...state.characters, entities: updatedCharacters}
+			};
 	  }),
 	  
 	  manageSceneResolution: (scene) => set((state) => {
-		if(!scene.narrative.charactersPresent) {
+		if(!scene.narrative.presentCharacters) {
 			return {};
 		}
 		
+
 		const updatedCharacters = { ...state.characters.entities };
 		 
-		scene.narrative.charactersPresent.forEach(characterId => {
+		scene.narrative.presentCharacters.forEach(characterId => {
 			const characterToUpdate = updatedCharacters[characterId];
 			
 			if(characterToUpdate) {
@@ -362,13 +375,13 @@ export const useWorldStore = create(
 	  })),
 	  
 	  resolveTurn: async () => {
-		const { 
-			getUnresolvedScenes, 
-			updateScene, 
-			manageSceneResolution, 
-			advTurn, 
-			meta 
-		} = get();
+			const { 
+				getUnresolvedScenes, 
+				updateScene, 
+				manageSceneResolution, 
+				advTurn, 
+				meta 
+			} = get();
 		
 		
 		const { writerSettings } = useSettingStore.getState();
@@ -383,7 +396,7 @@ export const useWorldStore = create(
 					text: '',
 					resetEachTurn: true,	
 				};
-		
+				
 				useSettingStore.getState().setAtmoSettings(newAtmoSettings);
 			}
 			
@@ -391,7 +404,7 @@ export const useWorldStore = create(
 		}
 	  
 		for(const scen of unresScenes) {
-			const promptData = {locationId: scen.locationId, characterIds: scen.narrative.charactersPresent, memoryDepth: memoryDepth };
+			const promptData = {locationId: scen.locationId, characterIds: scen.narrative.presentCharacters, memoryDepth: memoryDepth };
 		
 			const prompt = text + writerSettings.atmosphere.text + buildScenePrompt(promptData);
 		
