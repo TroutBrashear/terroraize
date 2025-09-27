@@ -2,11 +2,15 @@ import React, { useState, useEffect } from 'react';
 import styles from '../Form.module.css';
 import { useWorldStore } from '../../state/worldStore';
 import { useSettingStore } from '../../state/settingStore';
+import { useNotificationStore } from '../../state/notificationStore';
 import { generateDirection } from '../../services/ai';
 
 function TurnDebriefModal({ turnNumber, onSaveComplete }) {
 	const { isLoading, error, directions } = useWorldStore((state) => state.turnResAssist);
 	const modelName = useSettingStore((state) => state.writerSettings.api.modelName);
+
+	const { showNotification } = useNotificationStore.getState();
+
 	const { 
       fetchDirectionsStart, 
   	  fetchDirectionsSuccess, 
@@ -26,6 +30,7 @@ function TurnDebriefModal({ turnNumber, onSaveComplete }) {
 	const handleAIDirection = async () => {
 		fetchDirectionsStart();
 		try {
+			showNotification({type: 'status', message: 'AI Direction Request Sent.'});
 			const result = await generateDirection(modelName);
 			fetchDirectionsSuccess(result);
 		} catch (err) {

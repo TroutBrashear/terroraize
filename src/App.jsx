@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import DashboardView from './views/DashboardView';
 import SceneTimeline from './views/SceneTimeline';
@@ -6,7 +5,7 @@ import PoppinManager from './components/managers/PoppinManager';
 import styles from './App.module.css';
 import { useSettingStore } from './state/settingStore';
 import { fetchKeyStatus } from './services/settings';
-
+import Toast from './components/Toast';
 
 
 function App() {
@@ -30,7 +29,8 @@ function App() {
 	  	<footer>
 				<SceneTimeline />
 	  	</footer>
-	  
+	  	
+	  	<Toast/>
 	  	<PoppinManager />
     </div>
   );

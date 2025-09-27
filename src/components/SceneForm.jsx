@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useWorldStore } from '../state/worldStore';
 import { useSettingStore } from '../state/settingStore';
+import { useNotificationStore } from '../state/notificationStore';
 import styles from './Form.module.css';
 import { buildScenePrompt, generateScene } from '../services/ai';
 import LocationCard from './LocationCard';
@@ -24,6 +25,7 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 	const [presentCharacters, setPresentCharacters] = useState([]);
 	const [location, setLocation] = useState(null);
 
+	const { showNotification } = useNotificationStore.getState();
 
 	const [error, setError] = useState(null);
 	
@@ -80,8 +82,8 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 	const handleSceneGenerate = async () => {
 		setIsLoading(true);
 		try{
-			
-			const promptData = {locationId: sLocation, characterIds: presentCharacters, memoryDepth: memoryDepth };
+			showNotification({type: 'status', message: 'Scene Generation Request Sent.'});
+			const promptData = { locationId: sLocation, characterIds: presentCharacters, memoryDepth: memoryDepth };
 			const prompt = text + atmosphere + buildScenePrompt(promptData);
 		
 			const aiResponse = await generateScene(prompt, modelName);
