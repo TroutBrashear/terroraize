@@ -6,7 +6,7 @@ import styles from './App.module.css';
 import { useSettingStore } from './state/settingStore';
 import { fetchKeyStatus } from './services/settings';
 import Toast from './components/Toast';
-
+import LoadingSpinner from './components/Toast';
 
 function App() {
   const setWriterAPISettings = useSettingStore((state) => state.setWriterAPISettings);
@@ -30,6 +30,7 @@ function App() {
 				<SceneTimeline />
 	  	</footer>
 	  	
+	  	<LoadingSpinner/>
 	  	<Toast/>
 	  	<PoppinManager />
     </div>
