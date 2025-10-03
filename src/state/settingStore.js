@@ -5,7 +5,7 @@ export const useSettingStore = create(
 	persist((set) => ({
 		writerSettings: {
 			api: {
-				provider:'',
+				provider:'featherless',
 				isKeySet: false,
 				modelName: 'deepseek-ai/DeepSeek-V3-0324', 
 			},

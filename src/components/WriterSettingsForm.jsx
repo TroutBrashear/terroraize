@@ -4,6 +4,7 @@ import { saveApiKey } from '../services/settings';
 import styles from './Form.module.css';
 
 function WriterSettingsForm({onSaveComplete}) {
+	const AI_PROVIDERS = [{id: 'featherless', name: 'Featherless'}];
 	const updateAPISettings = useSettingStore((state) => state.setWriterAPISettings);
 	const updatePromptSettings = useSettingStore((state) => state.setWriterPromptSettings);
 	
@@ -11,9 +12,12 @@ function WriterSettingsForm({onSaveComplete}) {
 	const [error, setError] = useState(null);
 	
 	const modelName = useSettingStore((state) => state.writerSettings.api.modelName);
+	const prevProvider = useSettingStore((state) => state.writerSettings.api.provider)
 	const promptText = useSettingStore((state) => state.writerSettings.prompt.text);
 	const memoryDepth = useSettingStore((state) => state.writerSettings.prompt.memoryDepth);
-	
+
+	const [provider, setProvider] = useState(prevProvider);
+
 	const isKeySet = useSettingStore((state) => state.writerSettings.api.isKeySet);
 	const [key, setKey] = useState('');
 	const [model, setModel] = useState(modelName || '');
@@ -33,6 +37,7 @@ function WriterSettingsForm({onSaveComplete}) {
 			
 			const newAPISettings = {
 				modelName: model,
+				provider: provider,
 			};
 			const newPromptSettings = {
 				text: pText,
@@ -57,6 +62,14 @@ function WriterSettingsForm({onSaveComplete}) {
 		<form className={styles.form} onSubmit={handleSubmit}>
 			<h2> Writer Settings </h2>
 			
+			<label className={styles.label} htmlFor="providerSelect">Select an AI service provider:</label>
+			<select id="providerSelect" value={provider} onChange={(e) => setProvider(e.target.value)}> 
+				{AI_PROVIDERS.map(p => (
+            		<option key={p.id} value={p.id}>
+            		  {p.name}
+            		</option>
+          		))}
+			</select>
 			<label className={styles.label} htmlFor="apiKey">API Key </label>
 			<input id="apiKey" className={styles.input} placeholder={isKeySet ? '••••••••••••••••' : 'Enter API Key'} value={key} onChange={(e) => setKey(e.target.value)} autoComplete="new-password"/>
 			<label className={styles.label} htmlFor="modelName">AI Model </label>
