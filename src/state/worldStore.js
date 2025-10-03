@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware'; 
 import { useSettingStore } from './settingStore';
+import { useLoadingStore } from './loadingStore';
 import { generateScene, buildScenePrompt } from '../services/ai';
 
 // This is the main function from Zustand. We wrap it in `persist` middleware.
