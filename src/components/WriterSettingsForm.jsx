@@ -26,7 +26,10 @@ function WriterSettingsForm({onSaveComplete}) {
 		setError(null);
 		
 		try {
-			await saveApiKey(key);
+			if(key !== '') {
+				await saveApiKey(key);
+				console.log(key);
+			}
 			
 			const newAPISettings = {
 				modelName: model,
