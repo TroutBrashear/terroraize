@@ -47,14 +47,14 @@ export function buildScenePrompt(promptData) {
 	return prompt;
 }
 
-export async function generateScene(prompt, modelName){
+export async function generateScene(prompt, modelName, provider){
 	try {
 		const response = await fetch('/api/generate', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ prompt, modelName }), 
+			body: JSON.stringify({ prompt, modelName, provider }), 
 		});
 
 		if (!response.ok) {
@@ -63,15 +63,17 @@ export async function generateScene(prompt, modelName){
 		}
 
 		const data = await response.json();
-
-		if (data.choices && data.choices[0]) {
+		if (data.choices && data.choices[0]) { //featherless
 			return data.choices[0].text;
-		} 
+		}
+		else if(data.candidates && data.candidates[0].content.parts[0]) {//google
+			return data.candidates[0].content.parts[0].text;
+		}
 		else {
 			throw new Error("API response did not contain expected choices.");
 		}
 	} catch (error) {
-		
+		console.error("Error in generateScene: ", error);
 	}
 }
 

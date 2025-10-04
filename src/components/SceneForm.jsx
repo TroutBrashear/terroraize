@@ -12,7 +12,7 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 	const getLocationById = useWorldStore((state) => state.getLocationById);
 	const manageSceneResolution = useWorldStore((state) => state.manageSceneResolution);
 	
-	const { modelName } = useSettingStore((state) => state.writerSettings.api);
+	const { modelName, provider } = useSettingStore((state) => state.writerSettings.api);
 	const { text, memoryDepth } = useSettingStore((state) => state.writerSettings.prompt);
 	const atmosphere = useSettingStore((state) => state.writerSettings.atmosphere.text);
 	
@@ -86,7 +86,7 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 			const promptData = { locationId: sLocation, characterIds: presentCharacters, memoryDepth: memoryDepth };
 			const prompt = text + atmosphere + buildScenePrompt(promptData);
 		
-			const aiResponse = await generateScene(prompt, modelName);
+			const aiResponse = await generateScene(prompt, modelName, provider);
 			setNText(aiResponse);
 		
 			setResolved(true);

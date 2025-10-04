@@ -4,7 +4,7 @@ import { saveApiKey } from '../services/settings';
 import styles from './Form.module.css';
 
 function WriterSettingsForm({onSaveComplete}) {
-	const AI_PROVIDERS = [{id: 'featherless', name: 'Featherless'}];
+	const AI_PROVIDERS = [{id: 'featherless', name: 'Featherless'}, {id: 'google', name: 'Google Gemini'}];
 	const updateAPISettings = useSettingStore((state) => state.setWriterAPISettings);
 	const updatePromptSettings = useSettingStore((state) => state.setWriterPromptSettings);
 	
@@ -63,7 +63,7 @@ function WriterSettingsForm({onSaveComplete}) {
 			<h2> Writer Settings </h2>
 			
 			<label className={styles.label} htmlFor="providerSelect">Select an AI service provider:</label>
-			<select id="providerSelect" value={provider} onChange={(e) => setProvider(e.target.value)}> 
+			<select id="providerSelect" value={provider} onChange={(e) => setProvider(e.target.value)}	> 
 				{AI_PROVIDERS.map(p => (
             		<option key={p.id} value={p.id}>
             		  {p.name}
