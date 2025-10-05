@@ -7,6 +7,8 @@ function CharacterForm({ characterToEdit, onSaveComplete }) {
 	// Get the action from the store
   const addCharacter = useWorldStore((state) => state.addCharacter);
   const updateCharacter = useWorldStore((state) => state.updateCharacter);
+  const getSceneById = useWorldStore((state) => state.getSceneById);
+
   
   // State to hold the form data
   const [name, setName] = useState('');
@@ -24,7 +26,7 @@ function CharacterForm({ characterToEdit, onSaveComplete }) {
 	  
 	const recentIds = characterToEdit.narrative.sceneHistory.slice(-memoryDepth);
 	const scenes = recentIds.map(id =>
-		allScenes.find(s=> s.id === id)
+		getSceneById(id)
 	);
 	return scenes;
   }, [characterToEdit, memoryDepth, allScenes]);
