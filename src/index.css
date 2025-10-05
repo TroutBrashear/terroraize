@@ -15,6 +15,14 @@
   --z-index-base: 0;
   --z-index-view: 10;
   --z-index-poppin: 20;
+
+  --space-supersmall: 0.25rem;
+  --space-littlesmall:  0.5rem;  
+  --space-small:  0.75rem;
+  --space-medium:  1rem;
+  --space-large:  1.5rem;  
+  --space-littlelarge:  2rem;  
+  --space-superlarge: 2.5rem;    
 }
 
 a {

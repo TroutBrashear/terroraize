@@ -4,7 +4,7 @@
   flex-direction: column; 
   overflow-y: auto;
   background-color: #1a1a1a;
-  padding: 1rem;
+  padding: var(--space-medium);
   border-left: 2px solid #444;
   position: fixed;
   bottom: 0;
@@ -18,13 +18,13 @@
 .turnSection {
   display: flex;
   flex-direction: column; /* Stack the marker on top of the scenes */
-  padding: 0 1.5rem;
-  border-left: 1px solid #555;
+  padding: 0 var(--space-littlesmall);
+  border-left: var(--space-supersmall) solid #555;
   min-width: 200px; /* Give each turn a minimum width */
 }
 
 .turnMarker {
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 var(--space-littlesmall) 0;
   color: #ccc;
   font-weight: bold;
 }
@@ -32,16 +32,16 @@
 .scenesWrapper {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--space-supersmall);
 }
 
 .scenePip {
   background-color: #333;
   color: white;
-  border: 3px solid #ff4141;
+  border: var(--space-supersmall) solid #ff4141;
   border-radius: 4px;
   text-align: left;
-  padding: 0.25rem 0.5rem;
+  padding: var(--space-supersmall) var(--space-littlesmall);
   cursor: pointer;
   white-space: nowrap; 
   overflow: hidden;
@@ -51,10 +51,10 @@
 
 .newScene {
   background: none;
-  border: 1px solid #555;
-  border-radius: 4px;
+  border: var(--space-medium) solid #555;
+  border-radius: var(--space-small);
   color: white;
-  padding: 0.5rem 1rem;
+  padding: var(--space-littlesmall) var(--space-medium);
   width: 100%;
   position: absolute;
   bottom:0;

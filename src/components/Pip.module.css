@@ -1,7 +1,7 @@
 .pip {
-	border: 1px solid #555;
+	border: (--space-supersmall) solid #555;
 	border-radius: 2px;
-	padding: 1rem;
+	padding: var(--space-supersmall);
 	background-color: #caece1;
 	width: 30px;
 }

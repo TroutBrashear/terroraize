@@ -2,7 +2,7 @@
   position: relative;
   border: 1px solid #555;
   border-radius: 8px;
-  padding: 1rem;
+  padding: var(--space-medium);
   background-color: #caeced;
   width: 300px;
 }
@@ -11,7 +11,7 @@
   font-size: 1.25rem;
   font-weight: bold;
   color: #a0c4ff;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 var(--space-littlesmall) 0;
 }
 
 .description {
@@ -21,7 +21,7 @@
 }
 
 .cardHeader {
-  padding: 0.5rem 1rem; /* Give it some space */
+  padding: var(--space-littlesmall) var(--space-supersmall); /* Give it some space */
   cursor: grab; /* Show the user it's draggable */
   flex-grow: 1; /* Allow it to take up available space */
   /* You might give it a slightly different background to indicate it's a header */
@@ -33,7 +33,7 @@
   background: none;
   border: none;
   color: white;
-  padding: 0.5rem 1rem;
+  padding: var(--space-littlesmall) var(--space-supersmall);
   width: 100%;
   text-align: left;
   cursor: pointer;
