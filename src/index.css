@@ -42,10 +42,23 @@ body {
   min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* --- TYPOGRAPHIC SCALE --- */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0; /* Remove default browser margins */
+  font-weight: 600; /* A semi-bold weight */
+  line-height: 1.2;
+  color: #e0e0e0; /* A slightly softer white */
 }
+
+h1 { font-size: 2.25rem; }
+h2 { font-size: 1.75rem; }
+h3 { font-size: 1.25rem; }
+h4 { font-size: 1rem; }
+p { 
+  margin: 0; 
+  line-height: 1.5;
+}
+
 
 button {
   border-radius: 8px;
