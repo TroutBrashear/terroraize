@@ -7,7 +7,7 @@ import { generateDirection } from '../../services/ai';
 
 function TurnDebriefModal({ turnNumber, onSaveComplete }) {
 	const { isLoading, error, directions } = useWorldStore((state) => state.turnResAssist);
-	const modelName = useSettingStore((state) => state.writerSettings.api.modelName);
+	const { modelName, provider } = useSettingStore((state) => state.writerSettings.api);
 
 	const { showNotification } = useNotificationStore.getState();
 
@@ -31,7 +31,7 @@ function TurnDebriefModal({ turnNumber, onSaveComplete }) {
 		fetchDirectionsStart();
 		try {
 			showNotification({type: 'status', message: 'AI Direction Request Sent.'});
-			const result = await generateDirection(modelName);
+			const result = await generateDirection(modelName, provider);
 			fetchDirectionsSuccess(result);
 		} catch (err) {
 			if(err.message === "DIRECTOR_RESPONSE_PARSE_ERROR"){
@@ -46,7 +46,6 @@ function TurnDebriefModal({ turnNumber, onSaveComplete }) {
 
 	const handleDeleteDirection = (id) => {
 		setFinalDirections(currentDirections => currentDirections.filter(direction => direction.characterId !== id));
-
 	};
 
 	const handleClearDirections = () => {
