@@ -61,17 +61,12 @@ export async function generateScene(prompt, modelName, provider){
 			const errorData = await response.json();
 			throw new Error(errorData.error?.message || 'Failed to generate scene.');
 		}
-
 		const data = await response.json();
-		if (data.choices && data.choices[0]) { //featherless
-			return data.choices[0].text;
-		}
-		else if(data.candidates && data.candidates[0].content.parts[0]) {//google
-			return data.candidates[0].content.parts[0].text;
-		}
-		else {
-			throw new Error("API response did not contain expected choices.");
-		}
+		if (data && data.text) {
+      		return data.text;
+  		} else {
+     	 	throw new Error("API response did not contain the expected 'text' property.");
+   		 }
 	} catch (error) {
 		console.error("Error in generateScene: ", error);
 	}
@@ -179,7 +174,7 @@ export function buildDirectionPrompt() {
   return prompt;
 }
 
-export async function generateDirection(modelName){
+export async function generateDirection(modelName, provider){
 	const prompt = buildDirectionPrompt();
 	
 	try {
@@ -189,7 +184,7 @@ export async function generateDirection(modelName){
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ prompt, modelName }), 
+			body: JSON.stringify({ prompt, modelName, provider }), 
 		});
 
 		if (!response.ok) {
@@ -199,8 +194,8 @@ export async function generateDirection(modelName){
 
 		const data = await response.json();
 
-		if (data.choices && data.choices[0]) {
-			const responseString = sanitizeAIJSON(data.choices[0].text);
+		if (data && data.text) {
+			const responseString = sanitizeAIJSON(data.text);
 			
 			try {
 				const directions = JSON.parse(responseString);

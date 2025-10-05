@@ -25,60 +25,66 @@ export async function POST(request) {
       return new Response(JSON.stringify({ error: 'Prompt is required.' }), { status: 400 });
     }
 
+    let requestBody;
+    let requestHeader;
+    let requestEndpoint;
     
     switch (provider) {
       case 'featherless':
-        const featherlessRequestBody = {
+        requestBody = {
          model: modelName || 'deepseek-ai/DeepSeek-R1-0528',
          prompt: prompt,
          max_tokens: 1500,
          temperature: 0.7,
         };
-        const featherlessResponse = await fetch(FEATHERLESS_API_ENDPOINT, {
-          method: 'POST',
-          headers: {
-           'Content-Type': 'application/json',
-           'Authorization': `Bearer ${apiKey}`,
-          },
-          body: JSON.stringify(featherlessRequestBody),
-        });
 
-        if (!featherlessResponse.ok) {
-         const errorBody = await featherlessResponse.json();
-         console.error('Error from Featherless:', errorBody);
-         return new Response(JSON.stringify(errorBody), { status: featherlessResponse.status });
-        }
+        requestHeader = { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        };
 
-        return new Response(featherlessResponse.body, {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      case 'google':
-        const googleRequestBody = {
+        requestEndpoint = FEATHERLESS_API_ENDPOINT;
+        break;
+
+      case 'google': //GOOGLE GEMINI
+        requestBody = {
           "contents": [{ "parts": [{ "text": prompt }] }]
         };
+        requestHeader = {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': apiKey,
+        };
         const chosenModel = modelName || 'gemini-pro';
-        const constructedEndpoint = `${GOOGLE_API_ENDPOINT}${chosenModel}:generateContent`;
-        const googleResponse = await fetch(constructedEndpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-goog-api-key': apiKey,
-          },
-          body: JSON.stringify(googleRequestBody),
-        });
+        requestEndpoint = `${GOOGLE_API_ENDPOINT}${chosenModel}:generateContent`;
+        break;
+      }
+       
+      const serviceResponse = await fetch(requestEndpoint, {
+        method: 'POST',
+        headers: requestHeader,
+        body: JSON.stringify(requestBody),
+      });
 
-        if(!googleResponse.ok) {
-          const errorBody = await googleResponse.json();
-          console.error('Error from Google:', errorBody);
-          return new Response(JSON.stringify(errorBody), { status: googleResponse.status });
-        }
+      if(!serviceResponse.ok) {
+        const errorBody = await serviceResponse.json();
+        console.error('Error from provider:', errorBody);
+        return new Response(JSON.stringify(errorBody), { status: serviceResponse.status });
+      }
 
-        return new Response(googleResponse.body, {
-          status: 200,
-          headers: { 'Content-Type': 'application/json'},
-        });
-    } 
+     const data = await serviceResponse.json();
+     let retBody;
+     if (data.choices && data.choices[0]) { //featherless
+       retBody = data.choices[0].text;
+     }
+     else if(data.candidates && data.candidates[0].content.parts[0]) {//google
+       retBody = data.candidates[0].content.parts[0].text;
+     }
+     const clientResponse = { text: retBody }; 
+      //fetch call now unified
+      return new Response(JSON.stringify(clientResponse), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json'},
+      });
   } catch (error) {
     console.error('Error in /api/generate:', error);
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), {

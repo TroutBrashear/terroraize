@@ -48,8 +48,6 @@ function SceneForm({ scene, locationId, onSaveComplete }) {
 		const charIds = charsHere.map(char => char.id);
 		setPresentCharacters(charIds);
 	  }
-	  
-	  console.log(presentCharacters);
 	}, [scene, characters, locationId]);
 	
 	const handleSubmit = (event) => {
