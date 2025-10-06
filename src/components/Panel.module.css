@@ -1,18 +1,18 @@
-.dispContainer {
+.panel {
   display: flex;
   flex-direction: column;
-  gap: var(--space-medium);
-  width: 400px;
-  flex-shrink: 0;
-  height: 100%;
+  gap: var(--space-md);
   background-color: #2a2a2a;
   border-radius: 8px;
-  padding: var(--space-medium);
-  height: 100%;
+  padding: var(--space-md);
+  height:100%;
+  overflow: hidden;
+  box-sizing: border-box; 
 }
 
 .cardList {
+  grid-row: 2; 
   overflow-y: auto;
-  padding-right: var(--space-small);
-  flex-grow: 1;
+  height:100%;
+  padding-right: var(--space-sm);
 }

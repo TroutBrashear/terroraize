@@ -2,6 +2,7 @@ import React from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { useWorldStore } from '../state/worldStore';
 import CharacterDisp from './CharacterDisp';
+import styles from './Panel.module.css';
 
 function UnplacedContainer({ characters, onEditClick, onDeleteClick }) {
 	
@@ -21,12 +22,9 @@ function UnplacedContainer({ characters, onEditClick, onDeleteClick }) {
    return (
     // Attach the setNodeRef here to make the whole container droppable
     <div ref={setNodeRef} style={style}>
-      <h2>Unassigned Characters</h2>
-      <div style={{ display: 'flex', flexWrap: 'true', gap: '8px' }}>
         {characters.map(char => (
           <CharacterDisp key={char.id} character={char} onEditClick={onEditClick} onDeleteClick={onDeleteClick} />
         ))}
-      </div>
     </div>
   ); 
 }
