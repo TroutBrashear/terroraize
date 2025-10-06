@@ -81,30 +81,37 @@ export function sanitizeAIJSON(responseText) {
 	const firstBracket = responseText.indexOf('[');
 
 	let startIndex;
-	if(firstBrace === -1)
-	{
+	if(firstBrace === -1){
 		startIndex = firstBracket;
 	}
-	else if(firstBracket === -1)
-	{
+	else if(firstBracket === -1){
 		startIndex = firstBrace;
 	}
-	else
-	{
+	else{
 		startIndex = Math.min(firstBrace, firstBracket);
 	}
 
-	if(startIndex === -1) //no first bracket/brace found, no JSON here.
-	{
+	if(startIndex === -1){ //no first bracket/brace found, no JSON here.
 		return null;
+	}
+
+	let expectedEnd;
+	if(responseText[startIndex] === '{'){
+		expectedEnd = '}';
+	}
+	else{
+		expectedEnd = ']';
 	}
 
 	const lastBrace = responseText.lastIndexOf('}');
 	const lastBracket = responseText.lastIndexOf(']');
 	const endIndex = Math.max(lastBrace, lastBracket);
 
-	if(endIndex === -1) //no last bracket/brace found, either JSON not present or malformed.
-	{
+	if(endIndex === -1){ //no last bracket/brace found, either JSON not present or malformed.	
+		return null;
+	}
+
+	if(responseText[endIndex] !== expectedEnd){//JSON is malformed if the start and end aren't the same kind of brace/bracket
 		return null;
 	}
 

@@ -36,7 +36,7 @@ describe('Director Test', () => {
   });
 
   it('should return null for an incomplete JSON string', () => {
-    const input = '[{"id": 1}'; // Missing closing bracket
+    const input = '[{"id": 1}';
     expect(sanitizeAIJSON(input)).toBeNull();
   });
   
