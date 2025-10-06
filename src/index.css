@@ -45,9 +45,9 @@ body {
 /* --- TYPOGRAPHIC SCALE --- */
 h1, h2, h3, h4, h5, h6 {
   margin: 0; /* Remove default browser margins */
-  font-weight: 600; /* A semi-bold weight */
+  font-weight: 600; 
   line-height: 1.2;
-  color: #e0e0e0; /* A slightly softer white */
+  color: #e0e0e0; 
 }
 
 h1 { font-size: 2.25rem; }
