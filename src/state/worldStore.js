@@ -234,10 +234,7 @@ export const useWorldStore = create(
 	  },
 	  
 	  deleteCharacter: (characterId) => set((state) => {
-		  const updatedCharacters = {...state.characters.entities};
-		  
-		  delete updatedCharacters[characterId];
-		  
+		  const {[characterId]: deletedCharacter, ...updatedCharacters} =state.characters.entities;
 		  
 		  const updatedIds = state.characters.ids.filter(id => {
 			  return id !== characterId;
@@ -252,37 +249,35 @@ export const useWorldStore = create(
 	  }),
 	  
 	  deleteLocation: (locationId) => set((state) => {
-		  const updatedLocations = {...state.locations.entities};
 		  const updatedCharacters = {...state.characters.entities};
+
+		  const {[locationId]: deletedLocation, ...updatedLocations} = state.locations.entities;
 		
-		state.characters.ids.forEach(charId => {
-			const character = updatedCharacters[charId];
-			
-			if(character.currentLocationID === locationId) {
-				updatedCharacters[charId] = { ...character, currentLocationID: null };
-			}
-		});
+			state.characters.ids.forEach(charId => {
+				const character = updatedCharacters[charId];
+				
+				if(character.currentLocationID === locationId) {
+					updatedCharacters[charId] = { ...character, currentLocationID: null };
+				}
+			});
 		
-		delete updatedLocations[locationId];
+			const updatedIds = state.locations.ids.filter(id => {
+				return id !== locationId;
+			});
 		
-		const updatedIds = state.locations.ids.filter(id => {
-			return id !== locationId;
-		});
-		
-		return {
-			locations: { 
-				entities: updatedLocations,
-				ids: updatedIds,
-			},
-			characters: {  ...state.characters, entities: updatedCharacters}
-		};
+			return {
+				locations: { 
+					entities: updatedLocations,
+					ids: updatedIds,
+				},
+				characters: {  ...state.characters, entities: updatedCharacters}
+			};
 	  }),
 	  
 	  deleteScene: (sceneId) => set((state) => {
-			const updatedScenes = {...state.scenes.entities};
 			const updatedCharacters = {...state.characters.entities};
 
-			delete updatedScenes[sceneId];
+			const {[sceneId]: deletedScene, ...updatedScenes} = state.scenes.entities;
 		
 			const updatedIds = state.scenes.ids.filter(id => {
 			  return id !== sceneId;

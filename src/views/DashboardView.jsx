@@ -29,7 +29,7 @@ function DashboardView() {
   
   return (
 	<DndContext onDragEnd={handleDragEnd}>
-		<div>
+		<div className={styles.headerContainer}>
 			<button onClick={() => openModal('writer_settings_form')}>AI Settings</button>
 			<TurnControl openTurnSettings={() => openModal('turn_settings_form')}/>
 		</div>
