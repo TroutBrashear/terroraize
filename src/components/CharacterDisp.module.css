@@ -1,8 +1,8 @@
 .card {
   position: relative;
   border: 1px solid #555;
-  border-radius: 8px;
-  padding: var(--space-medium);
+  border-radius: 4px;
+  padding: var(--space-littlesmall);
   background-color: #caeced;
   width: 300px;
 }

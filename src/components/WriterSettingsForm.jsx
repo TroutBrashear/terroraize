@@ -4,7 +4,7 @@ import { saveApiKey } from '../services/settings';
 import styles from './Form.module.css';
 
 function WriterSettingsForm({onSaveComplete}) {
-	const AI_PROVIDERS = [{id: 'featherless', name: 'Featherless'}, {id: 'google', name: 'Google Gemini'}];
+	const AI_PROVIDERS = [{id: 'featherless', name: 'Featherless'}, {id: 'google', name: 'Google Gemini'}, {id: 'chutes', name: 'Chutes'}];
 	const updateAPISettings = useSettingStore((state) => state.setWriterAPISettings);
 	const updatePromptSettings = useSettingStore((state) => state.setWriterPromptSettings);
 	

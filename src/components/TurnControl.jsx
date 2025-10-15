@@ -4,6 +4,7 @@ import { useSettingStore } from '../state/settingStore';
 import { useModalStore } from '../state/modalStore';
 import { useNotificationStore } from '../state/notificationStore';
 import { buildScenePrompt, generateScene } from '../services/ai';
+import styles from './TurnControl.module.css';
 
 function TurnControl({openTurnSettings}) {
   const worldState = useWorldStore.getState();
@@ -26,7 +27,7 @@ function TurnControl({openTurnSettings}) {
 	
   return (
 	<div className="turn-control"> 
-	  <h1>{currentTurn}</h1>
+		<h1>TURN {currentTurn}</h1>
 	  <button onClick={() => resTurn()}> Advance Turn </button>
 	  <button onClick={openTurnSettings}> Turn Settings </button>
 	</div>

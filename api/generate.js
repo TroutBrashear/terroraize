@@ -4,6 +4,7 @@ import { parse } from 'cookie';
 // The correct, final endpoint for the Featherless Text Completions API.
 const FEATHERLESS_API_ENDPOINT = "https://api.featherless.ai/v1/completions";
 const GOOGLE_API_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/";
+const CHUTES_API_ENDPOINT = "https://llm.chutes.ai/v1/chat/completions"
 
 export async function POST(request) {
   try {
@@ -45,7 +46,20 @@ export async function POST(request) {
 
         requestEndpoint = FEATHERLESS_API_ENDPOINT;
         break;
+      case 'chutes':
+        requestBody = {
+          model: modelName || 'meta-llama/Llama-3.1-8B-Instruct',
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 1500,
+          temperature: 0.7,
+        };
+        requestHeader = {
+          'Content-Type': "application/json",
+          "X-API-Key": apiKey,
+        };
 
+        requestEndpoint = CHUTES_API_ENDPOINT;
+        break;
       case 'google': //GOOGLE GEMINI
         requestBody = {
           "contents": [{ "parts": [{ "text": prompt }] }]
@@ -73,7 +87,10 @@ export async function POST(request) {
 
      const data = await serviceResponse.json();
      let retBody;
-     if (data.choices && data.choices[0]) { //featherless
+     if(data.choices && data.choices[0].message) { //chat completion? chutes.
+      retBody = data.choices[0].message.content;
+     }
+     else if (data.choices && data.choices[0]) { //featherless
        retBody = data.choices[0].text;
      }
      else if(data.candidates && data.candidates[0].content.parts[0]) {//google
