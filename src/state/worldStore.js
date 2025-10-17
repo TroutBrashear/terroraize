@@ -382,7 +382,7 @@ export const useWorldStore = create(
 		
 		const { writerSettings } = useSettingStore.getState();
 	    const { text, memoryDepth } = writerSettings.prompt;
-		const { modelName } = writerSettings.api;
+		const { modelName, provider } = writerSettings.api;
 		
 		const unresScenes = getUnresolvedScenes(meta.currentTurn);
 		
@@ -404,7 +404,7 @@ export const useWorldStore = create(
 		
 			const prompt = text + writerSettings.atmosphere.text + buildScenePrompt(promptData);
 		
-			const output = await generateScene(prompt, modelName);
+			const output = await generateScene(prompt, modelName, provider);
 		
 			updateScene(scen.id, { narrative: { narrationText: output }, resolved: true });
 			manageSceneResolution(scen);
