@@ -1,0 +1,8 @@
+# attributions.txt
+
+## Assets
+* Favicon: Generated using the favicon.io text tool.
+
+## Tools
+* Deployed on: Vercel
+* Built with: Vite
