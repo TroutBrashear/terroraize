@@ -1,4 +1,4 @@
-import React from 'react';
+import  React, {useCallback} from 'react';
 import { useWorldStore } from '../state/worldStore';
 import { useModalStore } from '../state/modalStore';
 import LocationPanel from '../components/LocationPanel';
@@ -12,7 +12,7 @@ function DashboardView() {
   
   const moveCharacter = useWorldStore((state) => state.moveCharacter);
 
-  const handleDragEnd = (event) => {
+  const handleDragEnd = useCallback((event) => {
     const { active, over } = event;
 
     if (over) {
@@ -25,7 +25,7 @@ function DashboardView() {
 		moveCharacter(characterId, locationId);
 	  }
     }
-  };
+  }, [moveCharacter]);
   
   return (
 	<DndContext onDragEnd={handleDragEnd}>
