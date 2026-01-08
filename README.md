@@ -23,7 +23,7 @@ To run this project locally, follow these steps:
 1.  **Prerequisites:** Ensure you have Node.js (v18 or later) and `npm` installed.
 2.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/terroraize.git
+    git clone https://github.com/TroutBrashear/terroraize.git
     cd terroraize
     ```
 3.  **Install dependencies:**
